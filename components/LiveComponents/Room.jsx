@@ -12,6 +12,7 @@ import { firebaseDb } from "./firebase";
 const APP_ID = "b524a5780b4c4657bf7c8501881792be";
 import AC from "agora-chat";
 import { deleteObject, listAll, ref } from "firebase/storage";
+import AWS from "aws-sdk";
 const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 const conn = new AC.connection({
   appKey: "611139134#1334578",
@@ -184,6 +185,28 @@ function Room() {
       await rtmClient.logout();
 
       if (participants.length === 1) {
+        const params = {
+          Bucket: "ofistikwhiteboard", // Your bucket name
+        };
+
+        try {
+          const listObjectsResponse = await s3.listObjectsV2(params).promise();
+          if (listObjectsResponse.Contents.length > 0) {
+            const deleteParams = {
+              Bucket: "ofistikwhiteboard",
+              Delete: {
+                Objects: listObjectsResponse.Contents.map((item) => ({
+                  Key: item.Key,
+                })),
+              },
+            };
+
+            await s3.deleteObjects(deleteParams).promise();
+            console.log("All files deleted from S3.");
+          }
+        } catch (error) {
+          console.error("Failed to delete files from S3", error);
+        }
         try {
           const folderRef = ref(firebaseDb, `${base.ChName.split("%3D")[1]}/`); // oda ismini al
 

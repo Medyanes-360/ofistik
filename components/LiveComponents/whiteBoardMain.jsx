@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import AWS from "aws-sdk";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { useParams } from "next/navigation";
 
 function WhiteBoardMain({
   roomToken,
@@ -17,6 +18,8 @@ function WhiteBoardMain({
   const isMobile = window.innerWidth < 768;
   const uniqueRoomName = sessionStorage.getItem("uniqueRoomName");
   const fileInputRef = useRef(null); // Reference for hidden file input
+  const { ChName } = useParams();
+  const channelName = decodeURIComponent(ChName).split("=")[1];
 
   // Configure AWS S3
   const s3 = new AWS.S3({
@@ -27,7 +30,7 @@ function WhiteBoardMain({
 
   const handleFileUploadUrl = async (file) => {
     if (file) {
-      const fileName = `${file.name}`; // Ensures the filename includes the extension
+      const fileName = `${channelName}/${file.name}`; // Ensures the filename includes the extension
       const params = {
         Bucket: "ofistikwhiteboard", // Your bucket name
         Key: fileName, // File name you want to save as in S3
