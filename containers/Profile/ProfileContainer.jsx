@@ -153,7 +153,7 @@ const ProfilePageLayout = ({ data, query }) => {
                   ))}
               </div>
             </div>
-            <AppointmentComponent />
+            <AppointmentComponent query={query} />
           </div>
           <div className="w-full md:w-3/5 flex items-center justify-center pt-3 text-tertiaryBlue">
             <ProfileDetail

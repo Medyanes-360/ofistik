@@ -1,10 +1,5 @@
-import Navbar from '@/containers/Profile/components/Navbar'
+import Sidebar from '@/components/sidebar'
 
 export default ({ children }) => {
-  return (
-    <>
-      <Navbar />
-      {children}
-    </>
-  )
+  return <>{children}</>
 }

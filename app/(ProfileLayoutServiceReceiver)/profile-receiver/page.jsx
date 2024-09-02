@@ -1,17 +1,19 @@
 'use client'
 
+import Sidebar from '@/components/sidebar'
 import MyAppointments from '@/components/userAppointmentListModule/myAppointments'
 import MembershipInfo from '@/containers/Home/_components/receiverProfile/MembershipInfo'
 import PasswordUpdate from '@/containers/Home/_components/receiverProfile/PasswordUpdate'
 import { getAPI } from '@/services/fetchAPI'
 import { useSession } from 'next-auth/react'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const ProfilePage = ({ params }) => {
-  const [activeTab, setActiveTab] = useState('profile')
   const [appointments, setAppointments] = useState([])
   const [profileInfo, setProfileInfo] = useState()
+  const [activeTab, setActiveTab] = useState('profile')
   const { data: session } = useSession()
+
   useEffect(() => {
     const getProfileInfo = async () => {
       const res = await getAPI(
@@ -29,44 +31,27 @@ const ProfilePage = ({ params }) => {
       getProfileInfo()
     }
   }, [session?.user?.id])
+
   return (
-    <div className="bg-grayBg w-full min-h-screen pt-20 sm:pt-36 pb-10 p-3 overflow-auto">
-      <div className="max-w-4xl mx-auto">
-        {/* Tab Headers */}
-        <div className="flex justify-center mb-6 gap-3">
-          <button
-            className={`text-lg font-semibold py-2 px-4 ${
-              activeTab === 'profile'
-                ? 'text-white bg-orange-500'
-                : 'text-orange-700 bg-orange-100'
-            } rounded`}
-            onClick={() => setActiveTab('profile')}
-          >
-            Profil
-          </button>
-          <button
-            className={`text-lg font-semibold py-2 px-4 ${
-              activeTab === 'appointments'
-                ? 'text-white bg-orange-500'
-                : 'text-orange-700 bg-orange-100'
-            } rounded`}
-            onClick={() => setActiveTab('appointments')}
-          >
-            Randevularım
-          </button>
+    <div className="flex">
+      <Sidebar
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        profile={profileInfo}
+      />
+      <div className="bg-grayBg w-full min-h-screen pt-20 sm:pt-36 pb-10 p-3 overflow-auto">
+        <div className="max-w-4xl mx-auto">
+          {activeTab === 'profile' && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
+              <MembershipInfo profileInfo={profileInfo} />
+              <PasswordUpdate />
+            </div>
+          )}
+
+          {activeTab === 'appointments' && (
+            <MyAppointments appointments={appointments} />
+          )}
         </div>
-
-        {/* Tab Contents */}
-        {activeTab === 'profile' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
-            <MembershipInfo profileInfo={profileInfo} />
-            <PasswordUpdate />
-          </div>
-        )}
-
-        {activeTab === 'appointments' && (
-          <MyAppointments appointments={appointments} />
-        )}
       </div>
     </div>
   )
