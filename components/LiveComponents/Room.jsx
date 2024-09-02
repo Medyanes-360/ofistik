@@ -243,84 +243,181 @@ function Room() {
       // Çıkış başarılıysa loading ekranını kapat ve rating penceresini göster
       Swal.close();
 
-      // Yıldız değerlendirme ve süreler için bir Swal kutusu açıyoruz
-      Swal.fire({
-        title: "Toplantıdan ayrıldınız!",
-        html: `
-          <div>
-            <p style="margin-bottom:3px;">Toplantı süreleri:</p>
-            <ul>
-              <li style="margin-bottom:3px;">Beyaz tahta süresi: ${formatTime(
-                whiteboardDuration + newWhiteboardDuration
-              )}</li>
-              <li style="margin-bottom:3px;">Kamera süresi: ${formatTime(
-                cameraDuration
-              )}</li>
-              <li style="margin-bottom:3px;">Ekran paylaşım süresi: ${formatTime(
-                screenShareDuration + newScreenShareDuration
-              )}</li>
-              <li style="margin-bottom:3px;">Toplam toplantı süresi: ${formatTime(
-                timeElapsed1
-              )}</li>
-            </ul>
-          </div>
-          <div>
-            <p style="margin-bottom:3px;">Toplantıyı nasıl değerlendirdiniz?</p>
-            <div id="rating-stars">
-              ${[1, 2, 3, 4, 5]
-                .map(
-                  (star) =>
-                    `<i class="fa fa-star" data-value="${star}" style="font-size: 24px; color: gray; cursor: pointer;"></i>`
-                )
-                .join("")}
+      // Kullanıcının rolü
+
+      if (role === "admin") {
+        Swal.fire({
+          title: "Randevudan ayrıldınız!",
+          html: `
+            <div>
+              <ul>
+                <li style="margin-bottom:3px;">Beyaz tahta süresi: ${formatTime(
+                  whiteboardDuration + newWhiteboardDuration
+                )}</li>
+                <li style="margin-bottom:3px;">Kamera süresi: ${formatTime(
+                  cameraDuration
+                )}</li>
+                <li style="margin-bottom:3px;">Ekran paylaşım süresi: ${formatTime(
+                  screenShareDuration + newScreenShareDuration
+                )}</li>
+                <li style="margin-bottom:3px;">Toplam randevu süresi: ${formatTime(
+                  timeElapsed1
+                )}</li>
+              </ul>
             </div>
-          </div>
-        `,
-        showCancelButton: true,
-        confirmButtonText: "Gönder",
-        cancelButtonText: "İptal",
-        preConfirm: () => {
-          const rating = document.querySelector("#rating-stars .selected");
-          if (!rating) {
-            Swal.showValidationMessage("Lütfen bir yıldız seçin.");
-            return false;
-          }
-          return rating.dataset.value;
-        },
-      }).then((result) => {
-        if (result.isConfirmed) {
-          const userRating = result.value;
-          // Yıldız değerini al ve işlemlerini yap
-          console.log("Kullanıcı yıldız değerlendirmesi:", userRating);
-
-          // Değerlendirmeniz için teşekkürler mesajını göster
-          Swal.fire({
-            title: "Teşekkürler!",
-            html: "Değerlendirmeniz için teşekkürler, ana sayfaya yönlendiriliyorsunuz...",
-            icon: "success",
-            timer: 3000,
-            showConfirmButton: false,
-            willClose: () => {
-              // Yönlendirme işlemini yap
-              window.location.href = "/";
-            },
+            <div style="margin-top: 10px;">
+              <p style="margin-bottom: 3px; color: #f66451;">
+                Randevu esnasında hizmet alana istediği hizmeti sunamadığınızı düşünüyorsanız ücreti iade et butonuna tıklayabilirsiniz. 
+                Randevunuz başarıyla gerçekleşti ise ücreti al butonuna tıklayarak devam edebilirsiniz.
+              </p>
+            </div>
+          `,
+          showCancelButton: true,
+          confirmButtonText: "Ücreti Al",
+          cancelButtonText: "Ücreti İade Et",
+          confirmButtonColor: "#4CAF50",
+          cancelButtonColor: "#f66451",
+          preConfirm: (isConfirm) => {
+            return new Promise((resolve, reject) => {
+              Swal.fire({
+                title: "Emin misiniz?",
+                text: isConfirm
+                  ? "Ücreti almayı onaylıyor musunuz?"
+                  : "Bu işlemi geri alamazsınız! Ücreti iade etmek istediğinize emin misiniz?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: isConfirm
+                  ? "Evet, ücreti al!"
+                  : "Evet, iade et!",
+                cancelButtonText: "Hayır, vazgeç!",
+                confirmButtonColor: isConfirm ? "#4CAF50" : "#f66451",
+                cancelButtonColor: "#d33",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  resolve();
+                } else {
+                  reject();
+                }
+              });
+            });
+          },
+        })
+          .then((result) => {
+            if (result.isConfirmed) {
+              Swal.fire({
+                title: "İşlem Tamamlandı",
+                text: "Randevunuz başarıyla tamamlandı. Randevularım bölümünden randevu detaylarına ulaşabilir, finans bölümünden ödemenizi takip edebilirsiniz.",
+                icon: "success",
+                timer: 3000,
+                showConfirmButton: false,
+                willClose: () => {
+                  // Yönlendirme işlemini yap
+                  window.location.href = "/";
+                },
+              });
+            }
+          })
+          .catch(() => {
+            // İptal edildiğinde yapılacak işlemler
           });
-        }
-      });
+      } else {
+        Swal.fire({
+          title: "Randevudan ayrıldınız!",
+          html: `
+      <div>
+        <ul>
+          <li style="margin-bottom:3px;">Beyaz tahta süresi: ${formatTime(
+            whiteboardDuration + newWhiteboardDuration
+          )}</li>
+          <li style="margin-bottom:3px;">Kamera süresi: ${formatTime(
+            cameraDuration
+          )}</li>
+          <li style="margin-bottom:3px;">Ekran paylaşım süresi: ${formatTime(
+            screenShareDuration + newScreenShareDuration
+          )}</li>
+          <li style="margin-bottom:3px;">Toplam randevu süresi: ${formatTime(
+            timeElapsed1
+          )}</li>
+        </ul>
+      </div>
+      <div>
+        <p style="margin-bottom:3px;">Randevuyu nasıl değerlendirdiniz?</p>
+        <div id="rating-stars">
+          ${[1, 2, 3, 4, 5]
+            .map(
+              (star) =>
+                `<i class="fa fa-star hover:text-[#f66451]" data-value="${star}" style="font-size: 24px; color: gray; cursor: pointer;"></i>`
+            )
+            .join("")}
+        </div>
+      </div>
+      <div style="margin-top: 10px;">
+        <p style="margin-bottom:3px;">Randevu hakkında yorum yapın:</p>
+        <textarea
+id="feedback-comment"
+rows="4"
+style="background-color: #f3f4f6; width: 100%; border-radius: 0.5rem; margin-top: 0.75rem; margin-bottom: 0.75rem; padding: 0.5rem; outline: none; border: none;">
+</textarea>
 
-      // Yıldızları dinleyerek seçilen yıldıza göre renklendirme yapıyoruz
-      const stars = document.querySelectorAll("#rating-stars i");
-      stars.forEach((star) => {
-        star.addEventListener("click", (e) => {
-          stars.forEach((s) => s.classList.remove("selected"));
-          e.target.classList.add("selected");
-          stars.forEach(
-            (s) =>
-              (s.style.color =
-                s.dataset.value <= e.target.dataset.value ? "gold" : "gray")
-          );
+
+      </div>
+    `,
+          showCancelButton: true,
+          confirmButtonColor: "#f66451",
+          confirmButtonText: "Gönder",
+          cancelButtonText: "İptal",
+          preConfirm: () => {
+            const rating = document.querySelector("#rating-stars .selected");
+            const comment = document
+              .getElementById("feedback-comment")
+              .value.trim();
+            if (!rating) {
+              Swal.showValidationMessage("Lütfen bir yıldız seçin.");
+              return false;
+            }
+            return { rating: rating.dataset.value, comment };
+          },
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const { rating, comment } = result.value;
+            // Yıldız değeri ve yorum alınıp işlemler yapılabilir
+            console.log("Kullanıcı yıldız değerlendirmesi:", rating);
+            console.log("Kullanıcı yorumu:", comment);
+
+            // Değerlendirmeniz için teşekkürler mesajını göster
+            Swal.fire({
+              title: "Teşekkürler!",
+              html: "Değerlendirmeniz için teşekkürler, ana sayfaya yönlendiriliyorsunuz...",
+              icon: "success",
+              timer: 3000,
+              showConfirmButton: false,
+              willClose: () => {
+                // Yönlendirme işlemini yap
+                window.location.href = "/";
+              },
+            });
+          }
         });
-      });
+
+        // Yıldızları dinleyerek seçilen yıldıza göre renklendirme yapıyoruz
+        const stars = document.querySelectorAll("#rating-stars i");
+
+        stars.forEach((star) => {
+          star.addEventListener("click", (e) => {
+            stars.forEach((s) => s.classList.remove("selected"));
+            e.target.classList.add("selected");
+            stars.forEach(
+              (s) =>
+                (s.style.color =
+                  s.dataset.value <= e.target.dataset.value
+                    ? "#f66451"
+                    : "gray")
+            );
+          });
+        });
+      }
+
+      // Yıldız değerlendirme ve süreler için bir Swal kutusu açıyoruz
     } catch (error) {
       Swal.close();
       console.error("Error leaving the room:", error);
