@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import {
-  FiUser,
-  FiCalendar,
   FiSettings,
   FiHelpCircle,
   FiChevronDown,
@@ -13,23 +11,10 @@ import {
 } from 'react-icons/fi'
 import { CiSearch } from 'react-icons/ci'
 
-const Sidebar = ({ activeTab, setActiveTab, profile }) => {
+const Sidebar = ({ activeTab, setActiveTab, profile, tabs }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(true)
   const [openTab, setOpenTab] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
-
-  const tabs = [
-    { name: 'Profil', icon: <FiUser />, key: 'profile' },
-    {
-      name: 'Randevularım',
-      icon: <FiCalendar />,
-      key: 'appointments',
-      subTabs: [
-        { name: 'Upcoming', key: 'upcoming' },
-        { name: 'Past', key: 'past' },
-      ],
-    },
-  ]
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen)
@@ -66,9 +51,9 @@ const Sidebar = ({ activeTab, setActiveTab, profile }) => {
 
   return (
     <div
-      className={`bg-gray-900 text-white ${
+      className={`bg-gray-900 text-white fixed top-0 left-0 h-screen ${
         isSidebarOpen ? 'w-80' : 'w-20'
-      } min-h-screen flex flex-col p-4 transition-all duration-300 relative`}
+      } min-h-screen flex flex-col p-4 transition-all duration-300 relative z-50`}
     >
       <div
         className={`mb-8 flex items-center  ${

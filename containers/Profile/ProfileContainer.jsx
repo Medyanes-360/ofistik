@@ -55,7 +55,7 @@ const ProfilePageLayout = ({ data, query }) => {
   const setOpenAddPost = useProfileStore((state) => state.setOpenAddPost)
   const openAddPost = useProfileStore((state) => state.openAddPost)
 
-  const [isHearted, setIsHearted] = useState(false) //Hert button control in profile
+  const [isHearted, setIsHearted] = useState(false) //Heart button control in profile
   const [isCommented, setIsCommented] = useState(false) //Comment icon opening and update control
   const [isFollow, setIsFollow] = useState(false) //Social media field opening control
   const [detailControl, setDetailControl] = useState('general')
@@ -83,89 +83,87 @@ const ProfilePageLayout = ({ data, query }) => {
 
   return (
     <>
-      <div className=" md:fixed bg-grayBg w-full  mx-auto  z-0 pt-20 sm:pt-28  pb-10">
-        <div className="  w-full  flex  flex-col items-center md:items-start md:flex-row  gap-5 text-center px-5 lg:px-10">
+      <div className="flex flex-col lg:flex-row bg-grayBg w-full justify-between p-7 gap-7 z-0 pt-20 sm:pt-16">
+        <div
+          id="profile-sidebar-content"
+          className="overflow-y-auto bg-white w-full md:w-full lg:w-[40%] p-3 border shadow-lg rounded-3xl md:mb-7"
+        >
+          <ProfileCardInfo
+            data={data}
+            isHearted={isHearted}
+            setIsHearted={setIsHearted}
+            detailControl={detailControl}
+            setDetailControl={setDetailControl}
+            setIsCommented={setIsCommented}
+            isCommented={isCommented}
+            isFollow={isFollow}
+            price={450}
+            setIsFollow={setIsFollow}
+            minSessionTime={60}
+            socialRef={socialRef}
+            query={query}
+          />
           <div
-            id="fake-window"
-            className="md:h-[calc(100vh_-_140px)] overflow-y-auto bg-white w-full md:w-[38%] lg:w-[35%] p-3 border shadow-lg rounded-3xl"
+            className={`${
+              isFollow
+                ? 'flex flex-col items-center justify-center shadow-lg p-3 w-full transition-all duration-300 ease-in-out bg-white text-black rounded-lg z-50 mt-3'
+                : 'overflow-hidden transition-all h-0 duration-300 ease-in-out'
+            }`}
           >
-            <ProfileCardInfo
-              data={data}
-              isHearted={isHearted}
-              setIsHearted={setIsHearted}
-              detailControl={detailControl}
-              setDetailControl={setDetailControl}
-              setIsCommented={setIsCommented}
-              isCommented={isCommented}
-              isFollow={isFollow}
-              price={450}
-              setIsFollow={setIsFollow}
-              minSessionTime={60}
-              socialRef={socialRef}
-              query={query}
+            <Alert
+              alertVisible={alertVisible}
+              alertMessage={alertMessage}
+              alertType={alertType}
             />
             <div
-              className={`${
-                isFollow
-                  ? 'flex flex-col items-center justify-center shadow-lg p-3 w-full transition-all duration-300 ease-in-out bg-white text-black rounded-lg z-50 mt-3'
-                  : 'overflow-hidden transition-all h-0 duration-300 ease-in-out'
+              className={`flex items-center justify-around overflow-x-auto gap-1 w-full ${
+                isFollow ? 'h-20' : 'overflow-hidden transition h-0'
               }`}
             >
-              <Alert
-                alertVisible={alertVisible}
-                alertMessage={alertMessage}
-                alertType={alertType}
-              />
-              <div
-                className={`flex items-center justify-around overflow-x-auto gap-1 w-full ${
-                  isFollow ? 'h-20' : 'overflow-hidden transition h-0'
-                }`}
-              >
-                {socialMediaItems &&
-                  socialMediaItems.map((item, index) => (
-                    <div
-                      key={index}
-                      className="group relative flex flex-col items-center gap-1 hover:scale-105 duration-300 cursor-pointer p-1"
-                    >
-                      <div className="relative">
-                        <img
-                          src={item.icon}
-                          alt={item.alt}
-                          className="object-contain h-[20px]"
-                        />
-                        <IoCopy
-                          size={13}
-                          onClick={
-                            item.isUrl
-                              ? handleCopySocialMediaUrlAddress
-                              : handleCopySocialMediaNickMame
-                          }
-                          className="absolute left-9 top-0 hidden hover:opacity-80 group-hover:block duration-300 transition-all"
-                        />
-                      </div>
-                      <h1
-                        ref={textRef}
-                        className="text-[8px] sm:text-xs font-semibold hover:scale-100"
-                      >
-                        {item.nickname}
-                      </h1>
+              {socialMediaItems &&
+                socialMediaItems.map((item, index) => (
+                  <div
+                    key={index}
+                    className="group relative flex flex-col items-center gap-1 hover:scale-105 duration-300 cursor-pointer p-1"
+                  >
+                    <div className="relative">
+                      <img
+                        src={item.icon}
+                        alt={item.alt}
+                        className="object-contain h-[20px]"
+                      />
+                      <IoCopy
+                        size={13}
+                        onClick={
+                          item.isUrl
+                            ? handleCopySocialMediaUrlAddress
+                            : handleCopySocialMediaNickMame
+                        }
+                        className="absolute left-9 top-0 hidden hover:opacity-80 group-hover:block duration-300 transition-all"
+                      />
                     </div>
-                  ))}
-              </div>
+                    <h1
+                      ref={textRef}
+                      className="text-[8px] sm:text-xs font-semibold hover:scale-100"
+                    >
+                      {item.nickname}
+                    </h1>
+                  </div>
+                ))}
             </div>
-            <AppointmentComponent query={query} />
           </div>
-          <div className="w-full md:w-3/5 flex items-center justify-center pt-3 text-tertiaryBlue">
-            <ProfileDetail
-              detailControl={detailControl}
-              setDetailControl={setDetailControl}
-              setIsCommented={setIsCommented}
-              isCommented={isCommented}
-              isFollow={isFollow}
-              setIsFollow={setIsFollow}
-              query={query}
-            />
-          </div>
+          <AppointmentComponent query={query} />
+        </div>
+        <div className="w-full md:w-full lg:w-3/5 flex items-center justify-center pt-3 text-tertiaryBlue">
+          <ProfileDetail
+            detailControl={detailControl}
+            setDetailControl={setDetailControl}
+            setIsCommented={setIsCommented}
+            isCommented={isCommented}
+            isFollow={isFollow}
+            setIsFollow={setIsFollow}
+            query={query}
+          />
         </div>
       </div>
       {setOpenpageId && (

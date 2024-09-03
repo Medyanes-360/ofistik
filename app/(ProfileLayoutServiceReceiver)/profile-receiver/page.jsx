@@ -7,12 +7,25 @@ import PasswordUpdate from '@/containers/Home/_components/receiverProfile/Passwo
 import { getAPI } from '@/services/fetchAPI'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
-
+import { FiUser, FiCalendar } from 'react-icons/fi'
 const ProfilePage = ({ params }) => {
   const [appointments, setAppointments] = useState([])
   const [profileInfo, setProfileInfo] = useState()
   const [activeTab, setActiveTab] = useState('profile')
   const { data: session } = useSession()
+
+  const tabs = [
+    { name: 'Profil', icon: <FiUser />, key: 'profile' },
+    {
+      name: 'Randevularım',
+      icon: <FiCalendar />,
+      key: 'appointments',
+      subTabs: [
+        { name: 'Upcoming', key: 'upcoming' },
+        { name: 'Past', key: 'past' },
+      ],
+    },
+  ]
 
   useEffect(() => {
     const getProfileInfo = async () => {
@@ -38,6 +51,7 @@ const ProfilePage = ({ params }) => {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         profile={profileInfo}
+        tabs={tabs}
       />
       <div className="bg-grayBg w-full min-h-screen pt-20 sm:pt-36 pb-10 p-3 overflow-auto">
         <div className="max-w-4xl mx-auto">
