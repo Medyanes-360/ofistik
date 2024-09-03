@@ -1,93 +1,145 @@
-'use client'
+"use client";
 
-import Sidebar from '@/components/sidebar'
-import ProfileContainer from '@/containers/Profile/ProfileContainer'
+import Sidebar from "@/components/sidebar";
+import ProfileContainer from "@/containers/Profile/ProfileContainer";
 
-import { useEffect, useState } from 'react'
-import { postAPI, getAPI } from '@/services/fetchAPI'
-import { useSession } from 'next-auth/react'
-import { FiUser, FiCalendar } from 'react-icons/fi'
-import { FaAd, FaMoneyBillAlt } from 'react-icons/fa'
-import { MdCampaign, MdDashboard } from 'react-icons/md'
-import { RiMessage2Fill } from 'react-icons/ri'
-import { IoShareSocial } from 'react-icons/io5'
-import { FcStatistics } from 'react-icons/fc'
+import { useEffect, useState } from "react";
+import { postAPI, getAPI } from "@/services/fetchAPI";
+import { useSession } from "next-auth/react";
+import { FiUser, FiCalendar } from "react-icons/fi";
+import { FaAd, FaMoneyBillAlt } from "react-icons/fa";
+import { MdCampaign, MdDashboard } from "react-icons/md";
+import { RiMessage2Fill } from "react-icons/ri";
+import { IoShareSocial } from "react-icons/io5";
+import { FcStatistics } from "react-icons/fc";
+import Page from "@/app/campaign/page";
+import CampaginContainer from "@/components/Campaign";
+import Dashboard from "@/components/commonModules/dashboard";
+import MainPage from "@/components/mainAdvertPage/mainPage";
+import Home from "@/app/messages/page";
+import GeneralComponentFinance from "@/components/financeComponents/generalComponentFinance";
+import SocialAreaForUser from "@/components/socialStatistics/socialAreaForUser";
+import SocialPageComponent from "@/components/socialStatistics/socialPage";
 
 export default ({ params }) => {
-  const [data, setData] = useState(null)
-  const [profileInfo, setProfileInfo] = useState(null)
-  const [activeTab, setActiveTab] = useState('profile')
-  const { data: session } = useSession()
+  const [data, setData] = useState(null);
+  const [profileInfo, setProfileInfo] = useState(null);
+  const [activeTab, setActiveTab] = useState("profile");
+  const { data: sessionInfo } = useSession();
 
-  async function getProfileData() {
-    const response = await postAPI(
-      '/auth',
-      { email: 'example@ofistik.com' },
-      'POST'
-    )
-    setData(response)
-  }
+  // async function getProfileData() {
+  //   const response = await postAPI(
+  //     "/auth",
+  //     { email: "example@ofistik.com" },
+  //     "POST"
+  //   );
+  //   setData(response);
+  // }
+
+  // useEffect(() => {
+  //   getProfileData();
+  // }, []);
 
   useEffect(() => {
-    getProfileData()
-  }, [])
-
-  useEffect(() => {
+    console.log(sessionInfo);
     const getProfileInfo = async () => {
       const res = await getAPI(
-        `/profile/${session.user.id}/get-profile-receiver`
-      )
-      setProfileInfo(res.data)
+        `/profile/${sessionInfo.user.id}/get-profile-receiver`
+      );
+      console.log(res.data);
+      setProfileInfo(res.data);
+    };
+    if (sessionInfo?.user?.id) {
+      getProfileInfo();
     }
-    if (session?.user?.id) {
-      getProfileInfo()
-    }
-  }, [session?.user?.id])
+  }, []);
 
   const tabs = [
-    { name: 'Profil', icon: <FiUser />, key: 'profile' },
+    { name: "Profil", icon: <FiUser />, key: "profile" },
+    { name: "Kontrol Paneli", icon: <MdDashboard />, key: "dashboard" },
     {
-      name: 'Randevularım',
+      name: "Randevularım",
       icon: <FiCalendar />,
-      key: 'appointments',
+      key: "appointments",
       subTabs: [
-        { name: 'Upcoming', key: 'upcoming' },
-        { name: 'Past', key: 'past' },
+        { name: "Upcoming", key: "upcoming" },
+        { name: "Past", key: "past" },
       ],
     },
-    { name: 'Addsense', icon: <FaAd />, key: 'addsense' },
-    { name: 'Kampanyalar', icon: <MdCampaign />, key: 'campaign' },
-    { name: 'Dashboard', icon: <MdDashboard />, key: 'dashboard' },
-    { name: 'Mesajlar', icon: <RiMessage2Fill />, key: 'messages' },
-    { name: 'Finans', icon: <FaMoneyBillAlt />, key: 'finance' },
-    { name: 'Sosyal', icon: <IoShareSocial />, key: 'social' },
+    { name: "Reklamlar", icon: <FaAd />, key: "addsense" },
+    { name: "Kampanyalar", icon: <MdCampaign />, key: "campaign" },
+    { name: "Mesajlar", icon: <RiMessage2Fill />, key: "messages" },
+    { name: "Finans", icon: <FaMoneyBillAlt />, key: "finance" },
+    { name: "Sosyal", icon: <IoShareSocial />, key: "social" },
     {
-      name: 'Sosyal İstatistik',
+      name: "Sosyal İstatistik",
       icon: <FcStatistics />,
-      key: 'socialStatistic',
+      key: "socialStatistic",
     },
-  ]
+  ];
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'profile':
+      case "profile":
         return (
-          <ProfileContainer
-            data={data?.data}
-            query={params.id}
-            profile={profileInfo}
-          />
-        )
-      case 'appointments':
-        return <div>test</div>
-      // Add more cases as needed for different tabs
+          <div className="max-h-[100vh] w-full overflow-y-scroll">
+            <ProfileContainer
+              data={data?.data}
+              query={params.id}
+              profile={profileInfo}
+            />
+          </div>
+        );
+      case "campaign":
+        return (
+          <div className="max-h-[100vh] w-full overflow-y-scroll">
+            <CampaginContainer />
+          </div>
+        );
+      case "dashboard":
+        return (
+          <div className="max-h-[100vh] w-full overflow-y-scroll">
+            <Dashboard />
+          </div>
+        );
+      case "addsense":
+        return (
+          <div className="max-h-[100vh] w-full overflow-y-scroll">
+            <MainPage />
+          </div>
+        );
+      case "messages":
+        return (
+          <div className="max-h-[100vh] w-full overflow-y-scroll">
+            <Home />
+          </div>
+        );
+      case "finance":
+        return (
+          <div className="max-h-[100vh] w-full overflow-y-scroll">
+            <GeneralComponentFinance />
+          </div>
+        );
+      case "social":
+        return (
+          <div className="max-h-[100vh] w-full overflow-y-scroll">
+            <SocialAreaForUser />
+          </div>
+        );
+      case "socialStatistic":
+        return (
+          <div className="max-h-[100vh] w-full overflow-y-scroll">
+            <SocialPageComponent />
+          </div>
+        );
+
       default:
-        return null
+        return null;
     }
-  }
+  };
 
   return (
-    <div className="flex">
+    <div className="flex ">
       <Sidebar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -96,5 +148,5 @@ export default ({ params }) => {
       />
       {renderContent()}
     </div>
-  )
-}
+  );
+};

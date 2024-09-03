@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useEffect, useState } from "react";
 import FullCalendarComponent from "../bigCalendarModule/fullCalendar";
 import SetAppointmentTime from "../settingAppointmentTimeModule/setAppointmentTime";
@@ -11,11 +11,11 @@ function Dashboard() {
 
   useEffect(() => {
     setIsMobile(window.innerWidth <= 768);
-  const handleResize = () => {
-    setIsMobile(window.innerWidth <= 768);
-  };
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
 
-    handleResize()
+    handleResize();
 
     window.addEventListener("resize", handleResize);
 
@@ -26,7 +26,7 @@ function Dashboard() {
 
   return (
     <>
-      <div className="bg-grayBg">
+      <div className="bg-grayBg w-full">
         <div className="bg-grayBg lg:mx-[3rem]  xl:text-[1rem] lg:text-[0.68rem] md:text-[0.90rem]">
           <AppointmentInfos />
         </div>

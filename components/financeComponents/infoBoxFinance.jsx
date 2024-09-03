@@ -12,7 +12,7 @@ function InfoBoxFinance({ number, title, lastOne, changeGraph, description }) {
   };
 
   return (
-    <div className="rounded-md bg-gray-50 relative lg:w-[12vw] m-1 2xl:m-3 w-44 animate__animated animate__zoomIn">
+    <div className="rounded-md bg-gray-50 relative lg:w-[9vw] m-1 2xl:m-3 w-44 animate__animated animate__zoomIn">
       <div className="infoIcon absolute right-0 top-0">
         <i
           onMouseOver={handleInfoIconHover}

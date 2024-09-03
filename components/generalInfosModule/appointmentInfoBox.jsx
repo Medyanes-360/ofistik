@@ -19,7 +19,7 @@ function AppointmentInfoBox({
   };
 
   return (
-    <div className="rounded-md bg-gray-50 relative lg:w-[12.5vw] m-1 2xl:m-3 w-44 animate__animated animate__zoomIn">
+    <div className="rounded-md bg-gray-50 relative lg:w-[8.5vw] m-1 2xl:m-3 w-44 animate__animated animate__zoomIn">
       <div className="infoIcon absolute right-0 top-0">
         <i
           onMouseOver={handleInfoIconHover}
@@ -36,7 +36,7 @@ function AppointmentInfoBox({
       </div>
       <div className={`px-[0.3vw]  2xl:px-[0.5vw] py-[0.5vw] 2xl:py-[1.2vw] `}>
         <div className="titleArea flex justify-center m-2 ">
-          <h1 className="text-sm lg:text-[0.8vw] text-gray-600 font-semibold">
+          <h1 className="text-sm lg:text-[0.7vw] text-gray-600 font-semibold">
             {title}
           </h1>
         </div>

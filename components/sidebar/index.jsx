@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from "react";
 import {
   FiSettings,
   FiHelpCircle,
@@ -8,22 +8,24 @@ import {
   FiChevronUp,
   FiChevronRight,
   FiChevronLeft,
-} from 'react-icons/fi'
-import { CiSearch } from 'react-icons/ci'
+} from "react-icons/fi";
+import { CiSearch } from "react-icons/ci";
+import Image from "next/image";
+import profileImg from "./man.png";
 
 const Sidebar = ({ activeTab, setActiveTab, profile, tabs }) => {
-  const [isSidebarOpen, setSidebarOpen] = useState(true)
-  const [openTab, setOpenTab] = useState(null)
-  const [searchTerm, setSearchTerm] = useState('')
-
+  const [isSidebarOpen, setSidebarOpen] = useState(true);
+  const [openTab, setOpenTab] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  console.log(profile);
   const toggleSidebar = () => {
-    setSidebarOpen(!isSidebarOpen)
-    setOpenTab(null) // Close any open sub-tabs when toggling the sidebar
-  }
+    setSidebarOpen(!isSidebarOpen);
+    setOpenTab(null);
+  };
 
   const toggleSubMenu = (tab) => {
-    setOpenTab(openTab === tab ? null : tab)
-  }
+    setOpenTab(openTab === tab ? null : tab);
+  };
 
   const filteredTabs = tabs.filter(
     (tab) =>
@@ -32,38 +34,40 @@ const Sidebar = ({ activeTab, setActiveTab, profile, tabs }) => {
         tab.subTabs.some((subTab) =>
           subTab.name.toLowerCase().includes(searchTerm.toLowerCase())
         ))
-  )
+  );
 
   const handleClickOutside = (event) => {
-    if (event.target.closest('.sub-menu-popup')) return // Prevent closing when clicking inside the popup
-    setOpenTab(null)
-  }
+    if (event.target.closest(".sub-menu-popup")) return; // Prevent closing when clicking inside the popup
+    setOpenTab(null);
+  };
 
   useEffect(() => {
     if (!isSidebarOpen && openTab) {
-      document.addEventListener('click', handleClickOutside)
+      document.addEventListener("click", handleClickOutside);
     } else {
-      document.removeEventListener('click', handleClickOutside)
+      document.removeEventListener("click", handleClickOutside);
     }
 
-    return () => document.removeEventListener('click', handleClickOutside)
-  }, [openTab, isSidebarOpen])
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [openTab, isSidebarOpen]);
 
   return (
     <div
-      className={`bg-gray-900 text-white fixed top-0 left-0 h-screen ${
-        isSidebarOpen ? 'w-80' : 'w-20'
+      className={`bg-white text-gray-600 fixed top-0 left-0 h-screen ${
+        isSidebarOpen ? "w-80" : "w-20"
       } min-h-screen flex flex-col p-4 transition-all duration-300 relative z-50`}
     >
       <div
         className={`mb-8 flex items-center  ${
-          isSidebarOpen ? 'justify-between' : 'justify-center'
+          isSidebarOpen ? "justify-between" : "justify-center"
         }`}
       >
         {isSidebarOpen && (
           <div className="flex items-center space-x-4">
-            <img
-              src="/path/to/profile-picture.jpg"
+            <Image
+              width={100}
+              height={100}
+              src={profileImg}
               alt="Profile"
               className="w-12 h-12 rounded-full"
             />
@@ -91,8 +95,8 @@ const Sidebar = ({ activeTab, setActiveTab, profile, tabs }) => {
             placeholder="Ara"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className={`p-2 rounded bg-gray-800 text-white placeholder-gray-400 pl-12 transition-all duration-300 ${
-              isSidebarOpen ? 'w-full' : 'w-0'
+            className={`p-2 rounded bg-gray-200 text-white placeholder-gray-400 pl-12 transition-all duration-300 ${
+              isSidebarOpen ? "w-full" : "w-0"
             }`}
           />
         </div>
@@ -106,8 +110,8 @@ const Sidebar = ({ activeTab, setActiveTab, profile, tabs }) => {
                   activeTab === tab.key ||
                   (tab.subTabs &&
                     tab.subTabs.some((subTab) => activeTab === subTab.key))
-                    ? 'bg-gray-700'
-                    : ''
+                    ? "bg-premiumOrange text-white"
+                    : ""
                 }`}
                 onClick={() =>
                   tab.subTabs ? toggleSubMenu(tab.key) : setActiveTab(tab.key)
@@ -127,7 +131,7 @@ const Sidebar = ({ activeTab, setActiveTab, profile, tabs }) => {
                     <button
                       key={subTab.key}
                       className={`flex items-center p-2 text-sm font-medium rounded-lg w-full ${
-                        activeTab === subTab.key ? 'bg-gray-600' : ''
+                        activeTab === subTab.key ? "bg-gray-600" : ""
                       }`}
                       onClick={() => setActiveTab(subTab.key)}
                     >
@@ -142,11 +146,11 @@ const Sidebar = ({ activeTab, setActiveTab, profile, tabs }) => {
                     <button
                       key={subTab.key}
                       className={`block w-full text-left p-2 text-sm font-medium rounded-lg ${
-                        activeTab === subTab.key ? 'bg-gray-600' : ''
+                        activeTab === subTab.key ? "bg-gray-600" : ""
                       }`}
                       onClick={() => {
-                        setActiveTab(subTab.key)
-                        setOpenTab(null) // Alt tab seçildiğinde alt menüyü kapat
+                        setActiveTab(subTab.key);
+                        setOpenTab(null); // Alt tab seçildiğinde alt menüyü kapat
                       }}
                     >
                       {subTab.name}
@@ -163,25 +167,25 @@ const Sidebar = ({ activeTab, setActiveTab, profile, tabs }) => {
       <div className="mt-auto">
         <button
           className={`flex items-center p-3 text-sm font-medium rounded-lg  w-full ${
-            activeTab === 'support' ? 'bg-gray-700' : ''
+            activeTab === "support" ? "bg-gray-700" : ""
           }`}
-          onClick={() => setActiveTab('support')}
+          onClick={() => setActiveTab("support")}
         >
           <FiHelpCircle className="mr-2" />
-          {isSidebarOpen && 'Destek'}
+          {isSidebarOpen && "Destek"}
         </button>
         <button
           className={`flex items-center p-3 text-sm font-medium rounded-lg w-full ${
-            activeTab === 'settings' ? 'bg-gray-700' : ''
+            activeTab === "settings" ? "bg-gray-700" : ""
           }`}
-          onClick={() => setActiveTab('settings')}
+          onClick={() => setActiveTab("settings")}
         >
           <FiSettings className="mr-2" />
-          {isSidebarOpen && 'Ayarlar'}
+          {isSidebarOpen && "Ayarlar"}
         </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Sidebar
+export default Sidebar;
