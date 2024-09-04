@@ -314,7 +314,7 @@ const ProfileCardHeader = ({
             />
             <img
               src="/profileImage.jpg"
-              className={`rounded-full w-4/5 p-2 sm:w-3/5 md:w-2/5 md:w-auto md:h-2/3`}
+              className={`rounded-full w-4/5 p-2 sm:w-3/5 md:w-2/5  md:h-2/3`}
               alt=""
             />
           </div>
