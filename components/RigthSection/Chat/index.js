@@ -4,7 +4,7 @@ import Messages from '../Messages'
 
 function Chat({ selectedUser }) {
   return selectedUser ? (
-    <div className="md:w-[75%] w-full bg-messageBodyBg flex flex-col">
+    <div className="md:w-[75%] w-full bg-messageBodyBg flex flex-col  z-20 h-full">
       <ChatHeader />
       <Messages />
     </div>

@@ -57,7 +57,7 @@ const ProfilePage = ({ params }) => {
         <div className="max-w-4xl mx-auto">
           {activeTab === 'profile' && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
-              <MembershipInfo profileInfo={profileInfo} />
+              <MembershipInfo profileInfo={profileInfo} type={'RECEIVER'} />
               <PasswordUpdate />
             </div>
           )}

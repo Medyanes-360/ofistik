@@ -46,7 +46,7 @@ export default ({ params }) => {
     console.log(sessionInfo)
     const getProfileInfo = async () => {
       const res = await getAPI(
-        `/profile/${sessionInfo.user.id}/get-profile-receiver`
+        `/profile/${sessionInfo.user.id}/get-profile-provider`
       )
       console.log(res.data)
       setProfileInfo(res.data)
@@ -54,7 +54,7 @@ export default ({ params }) => {
     if (sessionInfo?.user?.id) {
       getProfileInfo()
     }
-  }, [sessionInfo?.user?.id])
+  }, [sessionInfo?.user.id])
 
   const tabs = [
     { name: 'Profil', icon: <FiUser />, key: 'profile' },
@@ -132,7 +132,7 @@ export default ({ params }) => {
           <div className='bg-grayBg w-full min-h-screen pt-20 sm:pt-36 pb-10 p-3 overflow-auto"'>
             <div className="max-w-4xl mx-auto">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
-                <MembershipInfo profileInfo={profileInfo} />
+                <MembershipInfo profileInfo={profileInfo} type={'PROVIDER'} />
                 <PasswordUpdate />
               </div>
             </div>

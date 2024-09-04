@@ -11,7 +11,7 @@ import isEqual from 'lodash/isEqual'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 
-const MembershipInfo = ({ profileInfo }) => {
+const MembershipInfo = ({ profileInfo, type }) => {
   const [initialValues, setInitialValues] = useState({
     firstName: '',
     lastName: '',
@@ -68,19 +68,38 @@ const MembershipInfo = ({ profileInfo }) => {
           }/${values.birthDate.getFullYear()}`
         : null
 
-      const res = await postAPI('/profile/receiver/update-profile-receiver', {
-        ...values,
-        birthdate: formattedBirthDate,
-        hizmetAlanId: profileInfo.id,
-      })
+      if (type === 'PROVIDER') {
+        const res = await postAPI('/profile/provider/update-profile-provider', {
+          ...values,
+          birthdate: formattedBirthDate,
+          hizmetVerenId: profileInfo.id,
+        })
 
-      if (res.status === 'UPDATED') {
-        toast.success('Profil Bilgisi Başarıyla güncellendi')
-        setInitialValues(values)
-        setFormKey((prevKey) => prevKey + 1)
-        router.refresh()
-      } else {
-        toast.error('Bir hata oluştu tekrar deneyiniz')
+        if (res.status === 'UPDATED') {
+          toast.success('Profil Bilgisi Başarıyla güncellendi')
+          setInitialValues(values)
+          setFormKey((prevKey) => prevKey + 1)
+          router.refresh()
+        } else {
+          toast.error('Bir hata oluştu tekrar deneyiniz')
+        }
+      }
+
+      if (type === 'RECEIVER') {
+        const res = await postAPI('/profile/receiver/update-profile-receiver', {
+          ...values,
+          birthdate: formattedBirthDate,
+          hizmetAlanId: profileInfo.id,
+        })
+
+        if (res.status === 'UPDATED') {
+          toast.success('Profil Bilgisi Başarıyla güncellendi')
+          setInitialValues(values)
+          setFormKey((prevKey) => prevKey + 1)
+          router.refresh()
+        } else {
+          toast.error('Bir hata oluştu tekrar deneyiniz')
+        }
       }
     },
   })
