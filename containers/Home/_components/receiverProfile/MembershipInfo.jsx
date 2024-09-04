@@ -94,6 +94,25 @@ const MembershipInfo = ({ profileInfo }) => {
         onSubmit={formik.handleSubmit}
         className="flex flex-col justify-between h-full"
       >
+        {/* Avatar */}
+        <div className="flex flex-col gap-1">
+          <label htmlFor="avatar" className="text-sm font-semibold">
+            Avatar
+          </label>
+          <input
+            type="file"
+            name="avatar"
+            className="border p-2 rounded w-full"
+            // onChange={formik.handleChange}
+            // onBlur={formik.handleBlur}
+            // value={formik.values.email}
+          />
+          <div className="min-h-[20px]">
+            {formik.touched.email && formik.errors.email ? (
+              <div className="text-red-500 text-sm">{formik.errors.email}</div>
+            ) : null}
+          </div>
+        </div>
         <div className="flex items-center gap-4">
           {/* First Name */}
           <div className="flex flex-col gap-1 flex-1">

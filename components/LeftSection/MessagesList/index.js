@@ -16,7 +16,7 @@ function MessagesList({ inbox, setSearchQuery }) {
 
   return (
     <div
-      className={`${styles.scrollStyle} md:w-[50%] lg:w-[50%] xl:w-[25%] w-[100%]  overflow-y-auto bg-messageBodyBg  min-h-[100vh] pb-10 max-h-[120vh]  }`}
+      className={`${styles.scrollStyle} md:w-[50%] lg:w-[50%] xl:w-[25%] w-[100%]  overflow-y-auto bg-messageBodyBg  min-h-[100vh] pb-10 max-h-[120vh] fixed z-50  }`}
     >
       <Header onSearch={handleSearch} onFilterChange={handleFilterChange} />
       <DirectMessages inbox={inbox} filterType={filterType} />

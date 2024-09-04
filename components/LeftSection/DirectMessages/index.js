@@ -11,7 +11,7 @@ function DirectMessages({ inbox, filterType }) {
   const { data: session } = useSession()
 
   return (
-    <div className="mt-[250px] md:mt-[390px]">
+    <div className="mt-[250px]  ">
       <div className="flex justify-between items-center pr-7"></div>
       <div className="mt-5">
         {inbox.map((person) => (
