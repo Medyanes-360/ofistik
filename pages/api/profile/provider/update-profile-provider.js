@@ -1,3 +1,5 @@
+import prisma from "@/lib/prisma";
+
 function normalizeAndRemoveSpaces(str) {
   return str
     .normalize("NFD") // Unicode Normalization Form D
