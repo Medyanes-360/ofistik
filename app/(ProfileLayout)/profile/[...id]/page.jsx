@@ -20,6 +20,8 @@ import Home from '@/app/messages/page'
 import GeneralComponentFinance from '@/components/financeComponents/generalComponentFinance'
 import SocialAreaForUser from '@/components/socialStatistics/socialAreaForUser'
 import SocialPageComponent from '@/components/socialStatistics/socialPage'
+import MembershipInfo from '@/containers/Home/_components/receiverProfile/MembershipInfo'
+import PasswordUpdate from '@/containers/Home/_components/receiverProfile/PasswordUpdate'
 
 export default ({ params }) => {
   const [data, setData] = useState(null)
@@ -125,6 +127,17 @@ export default ({ params }) => {
           </div>
         )
 
+      case 'settings':
+        return (
+          <div className='bg-grayBg w-full min-h-screen pt-20 sm:pt-36 pb-10 p-3 overflow-auto"'>
+            <div className="max-w-4xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
+                <MembershipInfo profileInfo={profileInfo} />
+                <PasswordUpdate />
+              </div>
+            </div>
+          </div>
+        )
       default:
         return null
     }

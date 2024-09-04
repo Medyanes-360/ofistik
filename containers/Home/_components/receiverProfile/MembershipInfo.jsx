@@ -88,7 +88,7 @@ const MembershipInfo = ({ profileInfo }) => {
   const isFormModified = !isEqual(formik.values, initialValues)
 
   return (
-    <div className="flex flex-col p-6 bg-white shadow-lg rounded-md w-full h-[500px] overflow-y-auto">
+    <div className="flex flex-col p-6 bg-white shadow-lg rounded-md w-full h-[600px] overflow-y-auto">
       <h2 className="text-lg font-bold mb-4">Üyelik Bilgilerim</h2>
       <form
         onSubmit={formik.handleSubmit}
