@@ -16,6 +16,7 @@ model User {
     isVerified        Boolean           @default(false)
     role              Role              @default(customer)
     hizmetAlan        HizmetAlan?
+    profileImg        String?
     hizmetVeren       HizmetVeren?
     VerificationCode  VerificationCode?
     createdAt         DateTime          @default(now())
