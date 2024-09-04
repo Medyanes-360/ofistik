@@ -9,7 +9,6 @@ import { HiVideoCamera } from "react-icons/hi2";
 import { BsBoxArrowUp } from "react-icons/bs";
 import { BiSolidComment } from "react-icons/bi";
 import { FiPlus } from "react-icons/fi";
-import Image from "next/image";
 import { BsCheck } from "react-icons/bs";
 import report from "../../../../../assets/image/report.png";
 import spam from "../../../../../assets/image/spam.png";
@@ -17,6 +16,7 @@ import { GrLanguage } from "react-icons/gr";
 import { FaUser } from "react-icons/fa";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import { SlOptionsVertical } from "react-icons/sl";
+import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { getAPI } from "@/services/fetchAPI";
 import profileImg from "./man.png";
@@ -107,7 +107,7 @@ const ProfileCardHeader = ({
 
     getProfile();
   }, [id]);
-
+  console.log(profile);
   return (
     !loading && (
       <>
@@ -118,15 +118,16 @@ const ProfileCardHeader = ({
                 1 === 1 ? "bg-green-600" : "bg-redOne"
               } rounded-full top-4 point right-0 border-white border-4`}
             ></span>
-            <img
+            <Image
+              width={100}
+              height={100}
               onClick={() => setWideScreenImg(true)}
-              src={session?.user.profileImg || profileImg}
+              src={profile?.profileImg || profileImg}
               className={`cursor-pointer w-28 h-28 rounded-full ${
                 1 !== undefined
                   ? `border-2 ${1 === 1 ? "border-green-600" : "border-redOne"}`
                   : ""
               }`}
-              alt=""
             />
             {1 !== undefined && (
               <span

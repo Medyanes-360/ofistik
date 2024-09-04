@@ -12,6 +12,7 @@ import {
 import { CiSearch } from "react-icons/ci";
 import Image from "next/image";
 import profileImg from "./man.png";
+import AWS from "aws-sdk";
 
 const Sidebar = ({ activeTab, setActiveTab, profile, tabs }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(true);

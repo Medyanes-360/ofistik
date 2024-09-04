@@ -10,7 +10,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import isEqual from "lodash/isEqual";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-
+import AWS from "aws-sdk";
 const MembershipInfo = ({ profileInfo, type }) => {
   const [initialValues, setInitialValues] = useState({
     firstName: "",
