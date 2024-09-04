@@ -1,25 +1,26 @@
-'use client'
-import React, { useCallback, useState, useRef, useEffect } from 'react'
+"use client";
+import React, { useCallback, useState, useRef, useEffect } from "react";
 //Components
-import Rating from '@/components/Rating'
+import Rating from "@/components/Rating";
 // Icons
-import { BiComment } from 'react-icons/bi'
-import { FaBullseye, FaMessage } from 'react-icons/fa6'
-import { HiVideoCamera } from 'react-icons/hi2'
-import { BsBoxArrowUp } from 'react-icons/bs'
-import { BiSolidComment } from 'react-icons/bi'
-import { FiPlus } from 'react-icons/fi'
-import Image from 'next/image'
-import { BsCheck } from 'react-icons/bs'
-import report from '../../../../../assets/image/report.png'
-import spam from '../../../../../assets/image/spam.png'
-import { GrLanguage } from 'react-icons/gr'
-import { FaUser } from 'react-icons/fa'
-import { IoIosCloseCircleOutline } from 'react-icons/io'
-import { SlOptionsVertical } from 'react-icons/sl'
-import { useSession } from 'next-auth/react'
-import { getAPI } from '@/services/fetchAPI'
-import { Alert } from '@chakra-ui/react'
+import { BiComment } from "react-icons/bi";
+import { FaBullseye, FaMessage } from "react-icons/fa6";
+import { HiVideoCamera } from "react-icons/hi2";
+import { BsBoxArrowUp } from "react-icons/bs";
+import { BiSolidComment } from "react-icons/bi";
+import { FiPlus } from "react-icons/fi";
+import Image from "next/image";
+import { BsCheck } from "react-icons/bs";
+import report from "../../../../../assets/image/report.png";
+import spam from "../../../../../assets/image/spam.png";
+import { GrLanguage } from "react-icons/gr";
+import { FaUser } from "react-icons/fa";
+import { IoIosCloseCircleOutline } from "react-icons/io";
+import { SlOptionsVertical } from "react-icons/sl";
+import { useSession } from "next-auth/react";
+import { getAPI } from "@/services/fetchAPI";
+import profileImg from "./man.png";
+import { Alert } from "@chakra-ui/react";
 //This props came from <ProfilePageLayout/>  component
 const ProfileCardHeader = ({
   isHearted,
@@ -36,45 +37,45 @@ const ProfileCardHeader = ({
   price,
   minSessionTime,
 }) => {
-  const optionsRef = useRef()
-  const { data: session } = useSession()
-  const id = session?.user.id
-  const userIdToFollow = session?.user.id
+  const optionsRef = useRef();
+  const { data: session } = useSession();
+  const id = session?.user.id;
+  const userIdToFollow = session?.user.id;
 
-  const [wideScreenImg, setWideScreenImg] = useState(false)
-  const [profile, setProfile] = useState()
-  const [showOptions, setShowOptions] = useState(true)
-  const [loading, setLoading] = useState(true)
+  const [wideScreenImg, setWideScreenImg] = useState(false);
+  const [profile, setProfile] = useState();
+  const [showOptions, setShowOptions] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   const handleFollowToggle = async () => {
     if (!session) {
       // If the user is not logged in, redirect to the login page
-      Alert.alert('Lütfen giriş yapınız!')
-      return
+      Alert.alert("Lütfen giriş yapınız!");
+      return;
     }
 
     try {
-      await axios.post('/api/follow', { userIdToFollow })
-      setIsHearted(!isHearted)
+      await axios.post("/api/follow", { userIdToFollow });
+      setIsHearted(!isHearted);
     } catch (error) {
-      console.error('Failed to follow/unfollow:', error)
+      console.error("Failed to follow/unfollow:", error);
     }
-  }
+  };
 
   const handleOpenCommentDetailPage = useCallback((event) => {
-    event.stopPropagation()
-    if (!isCommented && detailControl !== 'evaluation') {
-      setIsCommented(true)
-      setDetailControl('evaluation')
-    } else if (isCommented && detailControl !== 'evaluation') {
-      setIsCommented(true)
-      setDetailControl('evaluation')
-    } else if (isCommented && detailControl === 'evaluation') {
-      setDetailControl('general')
+    event.stopPropagation();
+    if (!isCommented && detailControl !== "evaluation") {
+      setIsCommented(true);
+      setDetailControl("evaluation");
+    } else if (isCommented && detailControl !== "evaluation") {
+      setIsCommented(true);
+      setDetailControl("evaluation");
+    } else if (isCommented && detailControl === "evaluation") {
+      setDetailControl("general");
     } else {
-      return
+      return;
     }
-  })
+  });
 
   useEffect(() => {
     const checkIfClickedOutside = (e) => {
@@ -83,29 +84,29 @@ const ProfileCardHeader = ({
         optionsRef.current &&
         !optionsRef.current.contains(e.target)
       ) {
-        setShowOptions(false)
+        setShowOptions(false);
       }
-    }
+    };
 
-    document.addEventListener('mousedown', checkIfClickedOutside)
+    document.addEventListener("mousedown", checkIfClickedOutside);
 
     return () => {
-      document.removeEventListener('mousedown', checkIfClickedOutside)
-    }
-  }, [showOptions])
+      document.removeEventListener("mousedown", checkIfClickedOutside);
+    };
+  }, [showOptions]);
 
   useEffect(() => {
     const getProfile = async () => {
-      const result = await getAPI(`/profile/${query}/get-profile`)
-      if (result.status === 'success') {
-        setProfile(result.data)
-        setLoading(false)
+      const result = await getAPI(`/profile/${query}/get-profile`);
+      if (result.status === "success") {
+        setProfile(result.data);
+        setLoading(false);
       }
-      console.log(result)
-    }
+      console.log(result);
+    };
 
-    getProfile()
-  }, [id])
+    getProfile();
+  }, [id]);
 
   return (
     !loading && (
@@ -114,28 +115,28 @@ const ProfileCardHeader = ({
           <div className="relative imageArea min-w-[115px] flex flex-col items-center justify-center">
             <span
               className={`absolute h-5 w-5 ${
-                1 === 1 ? 'bg-green-600' : 'bg-redOne'
+                1 === 1 ? "bg-green-600" : "bg-redOne"
               } rounded-full top-4 point right-0 border-white border-4`}
             ></span>
             <img
               onClick={() => setWideScreenImg(true)}
-              src="/profileImage.jpg"
+              src={session?.user.profileImg || profileImg}
               className={`cursor-pointer w-28 h-28 rounded-full ${
                 1 !== undefined
-                  ? `border-2 ${1 === 1 ? 'border-green-600' : 'border-redOne'}`
-                  : ''
+                  ? `border-2 ${1 === 1 ? "border-green-600" : "border-redOne"}`
+                  : ""
               }`}
               alt=""
             />
             {1 !== undefined && (
               <span
                 className={`status bg-lightGreen  ${
-                  1 === 1 ? 'text-green-600' : 'text-redOne'
+                  1 === 1 ? "text-green-600" : "text-redOne"
                 } px-3 py-1 rounded-2xl text-sm border-${
-                  1 === 1 ? 'green-600' : 'redOne'
+                  1 === 1 ? "green-600" : "redOne"
                 } border relative bottom-3.5 font-semibold`}
               >
-                {1 === 1 ? 'Çevrim içi' : 'Meşgul'}
+                {1 === 1 ? "Çevrim içi" : "Meşgul"}
               </span>
             )}
           </div>
@@ -161,8 +162,8 @@ const ProfileCardHeader = ({
                       size={16}
                       className={`heart-icon ${
                         isHearted
-                          ? 'hearted text-premiumOrange  animate-heart '
-                          : ''
+                          ? "hearted text-premiumOrange  animate-heart "
+                          : ""
                       }`}
                     />
                     <h1 className="text-[11px] font-semibold">Takip</h1>
@@ -175,7 +176,7 @@ const ProfileCardHeader = ({
                     <FiPlus
                       size={14}
                       className={`heart-icon ${
-                        isHearted ? 'heartedmb-1 animate-heart' : ''
+                        isHearted ? "heartedmb-1 animate-heart" : ""
                       }`}
                     />
                     <h1 className="text-[11px] font-semibold ">Takip Et</h1>
@@ -195,7 +196,7 @@ const ProfileCardHeader = ({
                   <BsCheck
                     size={18}
                     className={`heart-icon ${
-                      isHearted ? 'hearted text-white  animate-heart ' : ''
+                      isHearted ? "hearted text-white  animate-heart " : ""
                     }`}
                   />
                   <h1 className="text-[11px]">Takip</h1>
@@ -209,7 +210,7 @@ const ProfileCardHeader = ({
                   <FiPlus
                     size={14}
                     className={`heart-icon ${
-                      isHearted ? 'heartedmb-1 animate-heart' : ''
+                      isHearted ? "heartedmb-1 animate-heart" : ""
                     }`}
                   />
                   <h1 className="text-[11px] sm:hidden telefon:block ">
@@ -219,10 +220,10 @@ const ProfileCardHeader = ({
               )}
               <BsBoxArrowUp
                 onClick={() => {
-                  setIsFollow(!isFollow)
+                  setIsFollow(!isFollow);
                 }}
                 className={`${
-                  isFollow ? 'text-primaryBlue' : ''
+                  isFollow ? "text-primaryBlue" : ""
                 } hover:opacity-60`}
               />
               <div className="relative group">
@@ -233,7 +234,7 @@ const ProfileCardHeader = ({
                 <div
                   ref={optionsRef}
                   className={`absolute top-4 right-0 ${
-                    showOptions ? 'flex' : 'hidden'
+                    showOptions ? "flex" : "hidden"
                   } flex-col w-32 pt-2`}
                 >
                   <div className="py-2  w-full p-3 border rounded-lg text-[10px] bg-lighBlue  text-black">
@@ -259,7 +260,7 @@ const ProfileCardHeader = ({
               </div>
               <div className="flex items-center gap-1 ">
                 <h1 className="text-xs font-semibold">12</h1>
-                {isCommented && detailControl === 'evaluation' ? (
+                {isCommented && detailControl === "evaluation" ? (
                   <BiSolidComment onClick={handleOpenCommentDetailPage} />
                 ) : (
                   <BiComment
@@ -300,7 +301,7 @@ const ProfileCardHeader = ({
             {price}/Seans
           </h4>
           <h4 className="ml-2 text-sm pt-1">
-            {' '}
+            {" "}
             {`(Minimum ${minSessionTime} dakika)`}
           </h4>
         </div>
@@ -320,7 +321,7 @@ const ProfileCardHeader = ({
         )}
       </>
     )
-  )
-}
+  );
+};
 
-export default ProfileCardHeader
+export default ProfileCardHeader;

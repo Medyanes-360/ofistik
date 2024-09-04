@@ -1,64 +1,104 @@
-'use client'
+"use client";
 
-import React, { useEffect, useState } from 'react'
-import { useFormik } from 'formik'
-import * as Yup from 'yup'
+import React, { useEffect, useState } from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
-import { postAPI } from '@/services/fetchAPI'
-import DatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
-import isEqual from 'lodash/isEqual'
-import { useRouter } from 'next/navigation'
-import { toast } from 'react-toastify'
+import { postAPI } from "@/services/fetchAPI";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import isEqual from "lodash/isEqual";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
-const MembershipInfo = ({ profileInfo }) => {
+const MembershipInfo = ({ profileInfo, type }) => {
   const [initialValues, setInitialValues] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    profileImg: "",
     birthDate: null,
     corporateCheck: false,
-  })
-  const [formKey, setFormKey] = useState(0)
-  const router = useRouter()
+  });
+  const [formKey, setFormKey] = useState(0);
+  const router = useRouter();
+  const s3 = new AWS.S3({
+    accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY,
+    region: "eu-north-1",
+  });
+  const handleFileUploadUrl = async (file) => {
+    if (file) {
+      const fileName = `${
+        profileInfo.name || profileInfo.firstName
+      }-${Date.now()}`;
+      const params = {
+        Bucket: "ofistikprofileimages", // Your bucket name
+        Key: fileName, // File name you want to save as in S3
+        Body: file,
+        ContentType: file.type, // MIME type of the file
+      };
 
+      try {
+        const data = await s3.upload(params).promise(); // Upload to S3
+        return data.Location; // Return the yS3 file URL
+      } catch (error) {
+        console.error("Failed to upload file to S3", error);
+        throw error;
+      }
+    }
+  };
+  const handleAvatarChange = async (event) => {
+    const file = event.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      try {
+        const imageUrl = await handleFileUploadUrl(file); // S3'e yükleyin ve URL'yi alın
+        formik.setFieldValue("profileImg", imageUrl); // URL'yi profileImg alanına kaydedin
+      } catch (error) {
+        toast.error("Dosya yüklenirken bir hata oluştu.");
+      }
+    } else {
+      toast.error("Lütfen yalnızca resim dosyası yükleyin.");
+    }
+  };
   useEffect(() => {
     if (profileInfo) {
-      let birthDateValue = null
+      let birthDateValue = null;
 
       if (profileInfo?.user?.birthdate) {
-        const [day, month, year] = profileInfo.user.birthdate.split('/')
-        birthDateValue = new Date(`${year}-${month}-${day}`)
+        const [day, month, year] = profileInfo.user.birthdate.split("/");
+        birthDateValue = new Date(`${year}-${month}-${day}`);
       }
 
       const values = {
-        firstName: profileInfo?.name || '',
-        lastName: profileInfo?.surname || '',
-        email: profileInfo?.user?.email || '',
-        phone: profileInfo?.phone || '',
+        firstName: profileInfo?.name || "",
+        lastName: profileInfo?.surname || "",
+        email: profileInfo?.user?.email || "",
+        phone: profileInfo?.phone || "",
+        profileImg: profileInfo?.profileImg || "",
         birthDate: birthDateValue,
         corporateCheck: false,
-      }
+      };
 
-      setInitialValues(values)
-      setFormKey((prevKey) => prevKey + 1) // formKey'i güncelle
+      setInitialValues(values);
+      setFormKey((prevKey) => prevKey + 1); // formKey'i güncelle
     }
-  }, [profileInfo])
+  }, [profileInfo]);
 
   const formik = useFormik({
     enableReinitialize: true,
     key: formKey, // formKey ile formu yeniden render et
     initialValues,
     validationSchema: Yup.object({
-      firstName: Yup.string().required('Ad zorunludur'),
-      lastName: Yup.string().required('Soyad zorunludur'),
+      firstName: Yup.string().required("Ad zorunludur"),
+      lastName: Yup.string().required("Soyad zorunludur"),
       email: Yup.string()
-        .email('Geçersiz e-posta adresi')
-        .required('E-posta zorunludur'),
+        .email("Geçersiz e-posta adresi")
+        .required("E-posta zorunludur"),
       phone: Yup.string()
-        .matches(/^\+?\d+$/, 'Geçerli bir telefon numarası girin')
-        .required('Cep telefonu zorunludur'),
+        .matches(/^\+?\d+$/, "Geçerli bir telefon numarası girin")
+        .required("Cep telefonu zorunludur"),
       birthDate: Yup.date().nullable(),
     }),
     onSubmit: async (values) => {
@@ -66,26 +106,45 @@ const MembershipInfo = ({ profileInfo }) => {
         ? `${values.birthDate.getDate()}/${
             values.birthDate.getMonth() + 1
           }/${values.birthDate.getFullYear()}`
-        : null
+        : null;
 
-      const res = await postAPI('/profile/receiver/update-profile-receiver', {
-        ...values,
-        birthdate: formattedBirthDate,
-        hizmetAlanId: profileInfo.id,
-      })
+      if (type === "PROVIDER") {
+        const res = await postAPI("/profile/provider/update-profile-provider", {
+          ...values,
+          birthdate: formattedBirthDate,
+          hizmetVerenId: profileInfo.id,
+        });
 
-      if (res.status === 'UPDATED') {
-        toast.success('Profil Bilgisi Başarıyla güncellendi')
-        setInitialValues(values)
-        setFormKey((prevKey) => prevKey + 1)
-        router.refresh()
-      } else {
-        toast.error('Bir hata oluştu tekrar deneyiniz')
+        if (res.status === "UPDATED") {
+          toast.success("Profil Bilgisi Başarıyla güncellendi");
+          setInitialValues(values);
+          setFormKey((prevKey) => prevKey + 1);
+          router.refresh();
+        } else {
+          toast.error("Bir hata oluştu tekrar deneyiniz");
+        }
+      }
+
+      if (type === "RECEIVER") {
+        const res = await postAPI("/profile/receiver/update-profile-receiver", {
+          ...values,
+          birthdate: formattedBirthDate,
+          hizmetAlanId: profileInfo.id,
+        });
+
+        if (res.status === "UPDATED") {
+          toast.success("Profil Bilgisi Başarıyla güncellendi");
+          setInitialValues(values);
+          setFormKey((prevKey) => prevKey + 1);
+          router.refresh();
+        } else {
+          toast.error("Bir hata oluştu tekrar deneyiniz");
+        }
       }
     },
-  })
+  });
 
-  const isFormModified = !isEqual(formik.values, initialValues)
+  const isFormModified = !isEqual(formik.values, initialValues);
 
   return (
     <div className="flex flex-col p-6 bg-white shadow-lg rounded-md w-full h-[600px] overflow-y-auto">
@@ -102,10 +161,9 @@ const MembershipInfo = ({ profileInfo }) => {
           <input
             type="file"
             name="avatar"
+            accept="image/*" // Yalnızca resim dosyalarını kabul et
             className="border p-2 rounded w-full"
-            // onChange={formik.handleChange}
-            // onBlur={formik.handleBlur}
-            // value={formik.values.email}
+            onChange={handleAvatarChange} // Değişiklik fonksiyonunu çağır
           />
           <div className="min-h-[20px]">
             {formik.touched.email && formik.errors.email ? (
@@ -210,7 +268,7 @@ const MembershipInfo = ({ profileInfo }) => {
           </label>
           <DatePicker
             selected={formik.values.birthDate}
-            onChange={(date) => formik.setFieldValue('birthDate', date)}
+            onChange={(date) => formik.setFieldValue("birthDate", date)}
             dateFormat="dd/MM/yyyy"
             className="border p-2 rounded w-full"
             placeholderText="Gün/Ay/Yıl"
@@ -228,8 +286,8 @@ const MembershipInfo = ({ profileInfo }) => {
           type="submit"
           className={`p-2 rounded text-white ${
             isFormModified && !formik.isSubmitting
-              ? 'bg-orange-500'
-              : 'bg-orange-300 cursor-not-allowed'
+              ? "bg-orange-500"
+              : "bg-orange-300 cursor-not-allowed"
           }`}
           disabled={!isFormModified || formik.isSubmitting}
         >
@@ -237,7 +295,7 @@ const MembershipInfo = ({ profileInfo }) => {
         </button>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default MembershipInfo
+export default MembershipInfo;
