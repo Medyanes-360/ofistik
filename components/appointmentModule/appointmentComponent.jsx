@@ -86,14 +86,10 @@ function AppointmentComponent() {
     getSelectedTimes();
   }, []);
 
-  useEffect(() => {
-    console.log(selectedTimes);
-  }, [selectedTimes]);
-
   const skills = session?.skills ? JSON.parse(session.skills) : [];
-
+  console.log(skills);
   const obje = skills.map((skill) => skill.name);
-
+  console.log(obje);
   const handleFinish = async (formDataa) => {
     // randevuyu tamamlamamızı sağlayan fonksiyon
     setForWho(formDataa.kimIçin);
