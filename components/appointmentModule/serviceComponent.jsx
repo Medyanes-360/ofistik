@@ -16,9 +16,9 @@ function ServiceComponent({ services, setReturnService }) {
 
   useEffect(() => {
     setIsMobile(window.innerWidth <= 768);
-  const handleResize = () => {
-    setIsMobile(window.innerWidth <= 768);
-  };
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
 
     handleResize();
 
@@ -47,10 +47,9 @@ function ServiceComponent({ services, setReturnService }) {
             {currentTimes.map((title, index) => (
               <ServiceBox
                 key={index}
-                title={title.title}
+                title={title}
                 onServiceClick={handleAppointmentBoxClick}
                 selectedService={selectedService}
-                image={title.image}
               />
             ))}
           </div>
