@@ -26,6 +26,7 @@ function AppointmentComponent() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [duration, setDuration] = useState("");
   const [selectedTimes, setSelectedTimes] = useState([]); //saatleri atadığımız değişken
+  const [profileInfo, setProfileInfo] = useState([]); //saatleri atadığımız değişken
 
   const { data: session } = useSession();
   const openModal = () => {
@@ -36,6 +37,17 @@ function AppointmentComponent() {
     setIsModalOpen(false);
   };
 
+  useEffect(() => {
+    const getProfileInfo = async () => {
+      const res = await getAPI(
+        `/profile/${session.user.id}/get-profile-provider`
+      );
+      setProfileInfo(res.data);
+    };
+    if (session?.user?.id) {
+      getProfileInfo();
+    }
+  }, [session?.user?.id]);
   const getSelectedTimes = async () => {
     try {
       const times = await getAPI("/selectedtimes");
@@ -86,7 +98,7 @@ function AppointmentComponent() {
     getSelectedTimes();
   }, []);
 
-  const skills = session?.skills ? JSON.parse(session.skills) : [];
+  const skills = profileInfo.skills ? JSON.parse(profileInfo.skills) : [];
   console.log(skills);
   const obje = skills.map((skill) => skill.name);
   console.log(obje);
