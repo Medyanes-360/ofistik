@@ -98,10 +98,12 @@ function AppointmentComponent() {
     getSelectedTimes();
   }, []);
 
-  const skills = profileInfo.skills ? JSON.parse(profileInfo.skills) : [];
+  const skills = profileInfo.skills ? profileInfo.skills : []; // JSON.parse kaldırıldı
   console.log(skills);
-  const obje = skills.map((skill) => skill.name);
+
+  const obje = skills.map((skill) => skill.name); // Map kullanarak isimleri alıyoruz
   console.log(obje);
+
   const handleFinish = async (formDataa) => {
     // randevuyu tamamlamamızı sağlayan fonksiyon
     setForWho(formDataa.kimIçin);
