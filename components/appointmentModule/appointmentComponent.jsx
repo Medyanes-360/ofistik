@@ -7,6 +7,7 @@ import ServiceComponent from "./serviceComponent";
 import Swal from "sweetalert2";
 import AppointmentView from "./appointmentView";
 import { getAPI, postAPI } from "@/services/fetchAPI";
+import { useSession } from "next-auth/react";
 
 function AppointmentComponent() {
   const [step, setStep] = useState(1); // en üstte gözüken stepleri tutan değişken
@@ -26,10 +27,11 @@ function AppointmentComponent() {
   const [duration, setDuration] = useState("");
   const [selectedTimes, setSelectedTimes] = useState([]); //saatleri atadığımız değişken
 
+  const { data: session } = useSession();
   const openModal = () => {
     setIsModalOpen(true);
   };
-
+  console.log(session);
   const closeModal = () => {
     setIsModalOpen(false);
   };
@@ -40,8 +42,8 @@ function AppointmentComponent() {
       setSelectedTimes(times);
       return times;
     } catch (error) {
-      console.log(error)
-      return []
+      console.log(error);
+      return [];
     }
   };
 
@@ -85,45 +87,10 @@ function AppointmentComponent() {
   }, []);
 
   useEffect(() => {
-    console.log(selectedTimes)
-  }, [selectedTimes])
+    console.log(selectedTimes);
+  }, [selectedTimes]);
 
-  const obje = [
-    //örnek services datası
-    {
-      title: "İlişki Terapisi",
-    },
-    {
-      title: "Kaygı (Anksiyete)",
-    },
-    {
-      title: "Depresyon",
-    },
-    {
-      title: "Uyum Bozuklukları",
-    },
-    {
-      title: "Bireysel Terapi",
-    },
-    {
-      title: "Aile ve Çift Terapisi",
-    },
-    {
-      title: "Varoluşsal Problemler",
-    },
-    {
-      title: "Kilo Verme",
-    },
-    {
-      title: "Fitness",
-    },
-    {
-      title: "Futbol Antremanı",
-    },
-    {
-      title: "Basketbol Antremanı",
-    },
-  ];
+  const obje = JSON.parse(session?.serviceAreas);
 
   const handleFinish = async (formDataa) => {
     // randevuyu tamamlamamızı sağlayan fonksiyon
@@ -207,15 +174,15 @@ function AppointmentComponent() {
       title: "Başarılı",
       html: request
         ? '<h2 className="text-center text-base font-semibold p-4">' +
-        "Randevu talebiniz başarılı bir şekilde oluşturuldu." +
-        '<a className="text-deepSlateBlue text-lg font-semibold" href="/myAppointments"> Randevularım </a>' +
-        "bölümünden randevunuzun detaylarını inceleyebilir ve yönetebilirsiniz." +
-        "</h2>"
+          "Randevu talebiniz başarılı bir şekilde oluşturuldu." +
+          '<a className="text-deepSlateBlue text-lg font-semibold" href="/myAppointments"> Randevularım </a>' +
+          "bölümünden randevunuzun detaylarını inceleyebilir ve yönetebilirsiniz." +
+          "</h2>"
         : '<h2 className="text-center text-base font-semibold p-4">' +
-        "Sizinle buluşmayı büyük bir heyecan ile bekliyoruz." +
-        '<a className="text-deepSlateBlue text-lg font-semibold" href="/myAppointments"> Randevularım </a>' +
-        "bölümünden randevunuzun detaylarını inceleyebilir ve yönetebilirsiniz." +
-        "</h2>",
+          "Sizinle buluşmayı büyük bir heyecan ile bekliyoruz." +
+          '<a className="text-deepSlateBlue text-lg font-semibold" href="/myAppointments"> Randevularım </a>' +
+          "bölümünden randevunuzun detaylarını inceleyebilir ve yönetebilirsiniz." +
+          "</h2>",
       icon: "success",
       confirmButtonText: "Kapat",
     });
