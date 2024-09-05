@@ -90,7 +90,9 @@ function AppointmentComponent() {
     console.log(selectedTimes);
   }, [selectedTimes]);
 
-  const obje = JSON.parse(session?.serviceAreas);
+  const skills = session?.skills ? JSON.parse(session.skills) : [];
+
+  const obje = skills.map((skill) => skill.name);
 
   const handleFinish = async (formDataa) => {
     // randevuyu tamamlamamızı sağlayan fonksiyon

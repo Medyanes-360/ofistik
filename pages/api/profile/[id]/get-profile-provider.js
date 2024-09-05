@@ -13,7 +13,7 @@ const handler = async (req, res) => {
 
     const include = {
       user: true,
-      serviceAreas: true,
+      skills: true,
     };
 
     try {
