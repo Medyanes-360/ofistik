@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import useAlert from '@/lib/hooks/useAlert'
 import HorizontalCarousel from '@/components/tabsSocialComponents/HorizontalCarousel'
 import { useProfileStore } from '@/store/useProfileStore'
@@ -17,6 +17,7 @@ const AppointmentComponent = dynamic(
 //Icons
 import { IoCopy } from 'react-icons/io5'
 import AddPostComp from '@/components/tabsSocialComponents/AddPostComp'
+import { useSession } from 'next-auth/react'
 
 const socialMediaItems = [
   {
@@ -45,7 +46,7 @@ const socialMediaItems = [
   },
 ]
 
-const ProfilePageLayout = ({ data, query }) => {
+const ProfilePageLayout = ({ data, query, profile }) => {
   const users = useProfileStore((state) => state.users)
   const setUsers = useProfileStore((state) => state.setUsers)
   const posts = useProfileStore((state) => state.posts)
@@ -59,6 +60,7 @@ const ProfilePageLayout = ({ data, query }) => {
   const [isCommented, setIsCommented] = useState(false) //Comment icon opening and update control
   const [isFollow, setIsFollow] = useState(false) //Social media field opening control
   const [detailControl, setDetailControl] = useState('general')
+  const { data: session } = useSession()
 
   const socialRef = useRef()
   const textRef = useRef()
@@ -102,6 +104,7 @@ const ProfilePageLayout = ({ data, query }) => {
             minSessionTime={60}
             socialRef={socialRef}
             query={query}
+            profileInfo={profile}
           />
           <div
             className={`${
@@ -152,7 +155,9 @@ const ProfilePageLayout = ({ data, query }) => {
                 ))}
             </div>
           </div>
-          <AppointmentComponent query={query} />
+          {profile && session && profile.user.id !== session.user.id && (
+            <AppointmentComponent query={query} profile={profile} />
+          )}
         </div>
         <div className="w-full md:w-full lg:w-3/5 flex items-center justify-center pt-3 text-tertiaryBlue">
           <ProfileDetail
@@ -163,6 +168,7 @@ const ProfilePageLayout = ({ data, query }) => {
             isFollow={isFollow}
             setIsFollow={setIsFollow}
             query={query}
+            profile={profile}
           />
         </div>
       </div>

@@ -7,37 +7,28 @@ import PasswordUpdate from '@/containers/Home/_components/receiverProfile/Passwo
 import { getAPI } from '@/services/fetchAPI'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
-import { FiUser, FiCalendar } from 'react-icons/fi'
+
 const ProfilePage = ({ params }) => {
   const [appointments, setAppointments] = useState([])
   const [profileInfo, setProfileInfo] = useState()
   const [activeTab, setActiveTab] = useState('profile')
+  const [type, setType] = useState('')
   const { data: session } = useSession()
-
-  const tabs = [
-    { name: 'Profil', icon: <FiUser />, key: 'profile' },
-    {
-      name: 'Randevularım',
-      icon: <FiCalendar />,
-      key: 'appointments',
-      subTabs: [
-        { name: 'Upcoming', key: 'upcoming' },
-        { name: 'Past', key: 'past' },
-      ],
-    },
-  ]
 
   useEffect(() => {
     const getProfileInfo = async () => {
       const res = await getAPI(
-        `/profile/${session.user.id}/get-profile-receiver`
+        `/profile/${session.user.id}/get-profile-sidebar`
       )
       setProfileInfo(res.data)
+      console.log(res)
+
       if (res.status === 'success') {
         const appointments = await getAPI(
           `/appointment/receiver/${res.data.id}/get-appointment`
         )
         setAppointments(appointments.data)
+        setType(res.message)
       }
     }
     if (session?.user?.id) {
@@ -51,7 +42,7 @@ const ProfilePage = ({ params }) => {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         profile={profileInfo}
-        tabs={tabs}
+        type={type}
       />
       <div className="bg-grayBg w-full min-h-screen pt-20 sm:pt-36 pb-10 p-3 overflow-auto">
         <div className="max-w-4xl mx-auto">

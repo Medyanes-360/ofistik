@@ -6,12 +6,7 @@ import ProfileContainer from '@/containers/Profile/ProfileContainer'
 import { useEffect, useState } from 'react'
 import { postAPI, getAPI } from '@/services/fetchAPI'
 import { useSession } from 'next-auth/react'
-import { FiUser, FiCalendar } from 'react-icons/fi'
-import { FaAd, FaMoneyBillAlt } from 'react-icons/fa'
-import { MdCampaign, MdDashboard } from 'react-icons/md'
-import { RiMessage2Fill } from 'react-icons/ri'
-import { IoShareSocial } from 'react-icons/io5'
-import { FcStatistics } from 'react-icons/fc'
+
 import Page from '@/app/campaign/page'
 import CampaginContainer from '@/components/Campaign'
 import Dashboard from '@/components/commonModules/dashboard'
@@ -25,9 +20,11 @@ import PasswordUpdate from '@/containers/Home/_components/receiverProfile/Passwo
 
 export default ({ params }) => {
   const [data, setData] = useState(null)
+  const [profileForSidebar, setProfileForSidebar] = useState(null)
   const [profileInfo, setProfileInfo] = useState(null)
   const [activeTab, setActiveTab] = useState('profile')
   const { data: sessionInfo } = useSession()
+  const [type, setType] = useState('')
 
   // async function getProfileData() {
   //   const response = await postAPI(
@@ -43,34 +40,24 @@ export default ({ params }) => {
   // }, []);
 
   useEffect(() => {
-    console.log(sessionInfo)
     const getProfileInfo = async () => {
-      const res = await getAPI(
-        `/profile/${sessionInfo.user.id}/get-profile-provider`
-      )
-      console.log(res.data)
-      setProfileInfo(res.data)
+      try {
+        const [profileResponse, sidebarResponse] = await Promise.all([
+          getAPI(`/profile/${params.id}/get-profile-provider`),
+          getAPI(`/profile/${sessionInfo.user.id}/get-profile-sidebar`),
+        ])
+        setProfileForSidebar(sidebarResponse.data)
+        setProfileInfo(profileResponse.data)
+        setType(sidebarResponse.message)
+      } catch (error) {
+        console.error('Error fetching profile information:', error)
+      }
     }
+
     if (sessionInfo?.user?.id) {
       getProfileInfo()
     }
-  }, [sessionInfo?.user.id])
-
-  const tabs = [
-    { name: 'Profil', icon: <FiUser />, key: 'profile' },
-    { name: 'Kontrol Paneli', icon: <MdDashboard />, key: 'dashboard' },
-
-    { name: 'Reklamlar', icon: <FaAd />, key: 'addsense' },
-    { name: 'Kampanyalar', icon: <MdCampaign />, key: 'campaign' },
-    { name: 'Mesajlar', icon: <RiMessage2Fill />, key: 'messages' },
-    { name: 'Finans', icon: <FaMoneyBillAlt />, key: 'finance' },
-    { name: 'Sosyal', icon: <IoShareSocial />, key: 'social' },
-    {
-      name: 'Sosyal İstatistik',
-      icon: <FcStatistics />,
-      key: 'socialStatistic',
-    },
-  ]
+  }, [sessionInfo?.user?.id, params])
 
   const renderContent = () => {
     switch (activeTab) {
@@ -148,8 +135,8 @@ export default ({ params }) => {
       <Sidebar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        profile={profileInfo}
-        tabs={tabs}
+        profile={profileForSidebar}
+        type={type}
       />
       {renderContent()}
     </div>
