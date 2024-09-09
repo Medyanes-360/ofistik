@@ -87,7 +87,7 @@ const ProfilePageLayout = ({ data, query, profile, params }) => {
     if (sessionInfo?.user?.id) {
       getProfileInfo();
     }
-  }, []);
+  }, [sessionInfo?.user?.id]);
 
   // Click and copy text
   const handleCopySocialMediaNickMame = () => {
