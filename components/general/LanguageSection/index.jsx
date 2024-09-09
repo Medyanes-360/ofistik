@@ -5,7 +5,7 @@ import { GrLanguage } from 'react-icons/gr'
 import { IoIosAddCircle } from 'react-icons/io'
 import { toast } from 'react-toastify'
 
-const LanguageSection = ({ data: userInfo, isOwner }) => {
+const LanguageSection = ({ data: userInfo, isOwner, refreshProfile }) => {
   const [languages, setLanguages] = useState(userInfo.languages)
   const [editLanguagesId, setEditLanguagesId] = useState(null)
   const [editLanguagesData, setEditLanguagesData] = useState({
@@ -33,7 +33,7 @@ const LanguageSection = ({ data: userInfo, isOwner }) => {
 
     let data
     if (editLanguagesId === 'new') {
-      // Yeni eğitim bilgisi ekleniyor
+      refreshProfile()
       data = {
         languageName: editLanguagesData.languageName,
         level: editLanguagesData.level,
@@ -41,7 +41,7 @@ const LanguageSection = ({ data: userInfo, isOwner }) => {
         hizmetVerenId: userInfo.id,
       }
     } else {
-      // Mevcut eğitim bilgisi güncelleniyor
+      refreshProfile()
       data = {
         id: editLanguagesId,
         languageName: editLanguagesData.languageName,

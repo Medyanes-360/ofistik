@@ -5,7 +5,7 @@ import { IoIosAddCircle } from 'react-icons/io'
 import { PiStethoscopeFill } from 'react-icons/pi'
 import { toast } from 'react-toastify'
 
-const SkillsSection = ({ data: userInfo, isOwner }) => {
+const SkillsSection = ({ data: userInfo, isOwner, refreshProfile }) => {
   const [skills, setSkills] = useState(userInfo.skills)
   const [editSkillId, setEditSkillId] = useState(null)
   const [editSkillData, setEditSkillData] = useState({
@@ -32,12 +32,14 @@ const SkillsSection = ({ data: userInfo, isOwner }) => {
 
     let data
     if (editSkillId === 'new') {
+      refreshProfile()
       data = {
         name: editSkillData.name,
         id: null,
         hizmetVerenId: userInfo.id,
       }
     } else {
+      refreshProfile()
       data = {
         id: editSkillId,
         name: editSkillData.name,

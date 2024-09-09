@@ -15,26 +15,25 @@ const TabItemsGeneral = ({ query }) => {
   const [profileInfo, setProfileInfo] = useState([])
   const [loading, setLoading] = useState(true)
   const [isOwner, setIsOwner] = useState(false) // isOwner state'i oluşturuldu
+  const getProfile = async () => {
+    const result = await getAPI(`/profile/${query}/get-profile`)
+    if (result.status === 'success') {
+      setProfileInfo(result.data)
+      console.log(result.data.user.id)
 
-  useEffect(() => {
-    const getProfile = async () => {
-      const result = await getAPI(`/profile/${query}/get-profile`)
-      if (result.status === 'success') {
-        setProfileInfo(result.data)
-        console.log(result.data.user.id)
-
-        // API'den dönen id ile session id'sini karşılaştır
-        if (result.data.user.id === id) {
-          setIsOwner(true)
-        } else {
-          setIsOwner(false)
-        }
-
-        setLoading(false)
+      // API'den dönen id ile session id'sini karşılaştır
+      if (result.data.user.id === id) {
+        setIsOwner(true)
+      } else {
+        setIsOwner(false)
       }
+
+      setLoading(false)
     }
+  }
+  useEffect(() => {
     getProfile()
-  }, []) // useEffect bağımlılığına query'yi de ekledik
+  }, [query]) // useEffect bağımlılığına query'yi de ekledik
 
   return (
     !loading && (
@@ -44,10 +43,26 @@ const TabItemsGeneral = ({ query }) => {
           loading={loading}
           isOwner={isOwner}
         />
-        <EducationInfoSection mockData={profileInfo} isOwner={isOwner} />
-        <Certificate mockData={profileInfo} isOwner={isOwner} />
-        <SkillsSection data={profileInfo} isOwner={isOwner} />
-        <LanguageSection data={profileInfo} isOwner={isOwner} />
+        <EducationInfoSection
+          mockData={profileInfo}
+          isOwner={isOwner}
+          refreshProfile={getProfile}
+        />
+        <Certificate
+          mockData={profileInfo}
+          isOwner={isOwner}
+          refreshProfile={getProfile}
+        />
+        <SkillsSection
+          data={profileInfo}
+          isOwner={isOwner}
+          refreshProfile={getProfile}
+        />
+        <LanguageSection
+          data={profileInfo}
+          isOwner={isOwner}
+          refreshProfile={getProfile}
+        />
       </div>
     )
   )

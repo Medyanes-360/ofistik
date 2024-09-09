@@ -5,7 +5,7 @@ import { IoIosAddCircle } from 'react-icons/io'
 import { LiaCertificateSolid } from 'react-icons/lia'
 import { toast } from 'react-toastify'
 
-const Certificate = ({ mockData, isOwner }) => {
+const Certificate = ({ mockData, isOwner, refreshProfile }) => {
   const [certificates, setSertificates] = useState(mockData.certificates)
   const [editCertificateId, setEditCertificateId] = useState(null)
   const [editCertificationData, setEditCertificationData] = useState({
@@ -34,6 +34,7 @@ const Certificate = ({ mockData, isOwner }) => {
 
     let data
     if (editCertificateId === 'new') {
+      refreshProfile()
       data = {
         certificate: editCertificationData.certificate,
         year: editCertificationData.year,
@@ -41,6 +42,7 @@ const Certificate = ({ mockData, isOwner }) => {
         hizmetVerenId: mockData.id,
       }
     } else {
+      refreshProfile()
       data = {
         id: editCertificateId,
         certificate: editCertificationData.certificate,

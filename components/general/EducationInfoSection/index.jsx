@@ -5,7 +5,7 @@ import { FaPencilAlt } from 'react-icons/fa'
 
 import { IoIosAddCircle } from 'react-icons/io'
 import { toast } from 'react-toastify'
-const EducationInfoSection = ({ mockData, isOwner }) => {
+const EducationInfoSection = ({ mockData, isOwner, refreshProfile }) => {
   const [educationInfo, setEducationInfo] = useState(mockData?.educationInfo)
   const [editEducationId, setEditEducationId] = useState(null)
   const [editEducationData, setEditEducationData] = useState({
@@ -41,6 +41,7 @@ const EducationInfoSection = ({ mockData, isOwner }) => {
         id: null,
         hizmetVerenId: mockData.id,
       }
+      refreshProfile()
     } else {
       // Mevcut eğitim bilgisi güncelleniyor
       data = {
@@ -49,18 +50,21 @@ const EducationInfoSection = ({ mockData, isOwner }) => {
         year: editEducationData.year,
         hizmetVerenId: mockData.id,
       }
+      refreshProfile()
     }
 
     try {
       const res = await postAPI('/profile/education/upsert-education', data)
       if (res.status === 'ADDED') {
         toast.success('Eğitim bilgisi başarıyla eklendi')
+
         setEducationInfo((prevInfo) => [
           ...prevInfo,
           { id: Date.now().toString(), ...editEducationData },
         ])
       } else if (res.status === 'UPDATED') {
         toast.success('Eğitim bilgisi başarıyla güncellendi')
+
         setEducationInfo((prevInfo) =>
           prevInfo.map((education) =>
             education.id === editEducationId
