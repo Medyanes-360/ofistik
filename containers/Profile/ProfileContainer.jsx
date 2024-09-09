@@ -1,87 +1,110 @@
-'use client'
-import React, { useState, useRef, useEffect } from 'react'
-import useAlert from '@/lib/hooks/useAlert'
-import HorizontalCarousel from '@/components/tabsSocialComponents/HorizontalCarousel'
-import { useProfileStore } from '@/store/useProfileStore'
-import dynamic from 'next/dynamic'
+"use client";
+import React, { useState, useRef, useEffect } from "react";
+import useAlert from "@/lib/hooks/useAlert";
+import HorizontalCarousel from "@/components/tabsSocialComponents/HorizontalCarousel";
+import { useProfileStore } from "@/store/useProfileStore";
+import { postAPI, getAPI } from "@/services/fetchAPI";
+import dynamic from "next/dynamic";
 
 // Components
-import ProfileDetail from './components/profileContentbar/ProfileContentbar'
-import ProfileCardInfo from './components/profileCard/profileCardInfo/ProfileCardInfo'
-import Alert from '@/components/Alert'
+import ProfileDetail from "./components/profileContentbar/ProfileContentbar";
+import ProfileCardInfo from "./components/profileCard/profileCardInfo/ProfileCardInfo";
+import Alert from "@/components/Alert";
 const AppointmentComponent = dynamic(
-  () => import('@/components/appointmentModule/appointmentComponent'),
+  () => import("@/components/appointmentModule/appointmentComponent"),
   { ssr: false }
-)
+);
 
 //Icons
-import { IoCopy } from 'react-icons/io5'
-import AddPostComp from '@/components/tabsSocialComponents/AddPostComp'
-import { useSession } from 'next-auth/react'
+import { IoCopy } from "react-icons/io5";
+import AddPostComp from "@/components/tabsSocialComponents/AddPostComp";
+import { useSession } from "next-auth/react";
+import MembershipInfo from "../Home/_components/receiverProfile/MembershipInfo";
 
 const socialMediaItems = [
   {
-    icon: 'https://img.icons8.com/3d-fluency/94/instagram-new.png',
-    alt: 'instagram-new',
-    nickname: '@gabriel02',
+    icon: "https://img.icons8.com/3d-fluency/94/instagram-new.png",
+    alt: "instagram-new",
+    nickname: "@gabriel02",
     isUrl: false,
   },
   {
-    icon: 'https://img.icons8.com/ios-filled/50/twitterx--v1.png',
-    alt: 'twitter',
-    nickname: '@gabriel02',
+    icon: "https://img.icons8.com/ios-filled/50/twitterx--v1.png",
+    alt: "twitter",
+    nickname: "@gabriel02",
     isUrl: false,
   },
   {
-    icon: 'https://img.icons8.com/color/48/facebook.png',
-    alt: 'facebook',
-    nickname: '@gabriel02face',
+    icon: "https://img.icons8.com/color/48/facebook.png",
+    alt: "facebook",
+    nickname: "@gabriel02face",
     isUrl: false,
   },
   {
-    icon: 'https://img.icons8.com/ios-filled/50/link--v1.png',
-    alt: 'link',
-    nickname: 'Profil Link',
+    icon: "https://img.icons8.com/ios-filled/50/link--v1.png",
+    alt: "link",
+    nickname: "Profil Link",
     isUrl: true,
   },
-]
+];
 
 const ProfilePageLayout = ({ data, query, profile }) => {
-  const users = useProfileStore((state) => state.users)
-  const setUsers = useProfileStore((state) => state.setUsers)
-  const posts = useProfileStore((state) => state.posts)
-  const setPosts = useProfileStore((state) => state.setPosts)
-  const openPageId = useProfileStore((state) => state.openPageId)
-  const setOpenpageId = useProfileStore((state) => state.setOpenpageId)
-  const setOpenAddPost = useProfileStore((state) => state.setOpenAddPost)
-  const openAddPost = useProfileStore((state) => state.openAddPost)
+  const [profileInfo, setProfileInfo] = useState(null);
+  const users = useProfileStore((state) => state.users);
+  const setUsers = useProfileStore((state) => state.setUsers);
+  const posts = useProfileStore((state) => state.posts);
+  const setPosts = useProfileStore((state) => state.setPosts);
+  const openPageId = useProfileStore((state) => state.openPageId);
+  const setOpenpageId = useProfileStore((state) => state.setOpenpageId);
+  const setOpenAddPost = useProfileStore((state) => state.setOpenAddPost);
+  const openAddPost = useProfileStore((state) => state.openAddPost);
 
-  const [isHearted, setIsHearted] = useState(false) //Heart button control in profile
-  const [isCommented, setIsCommented] = useState(false) //Comment icon opening and update control
-  const [isFollow, setIsFollow] = useState(false) //Social media field opening control
-  const [detailControl, setDetailControl] = useState('general')
-  const { data: session } = useSession()
+  const [isHearted, setIsHearted] = useState(false); //Heart button control in profile
+  const [isCommented, setIsCommented] = useState(false); //Comment icon opening and update control
+  const [isFollow, setIsFollow] = useState(false); //Social media field opening control
+  const [detailControl, setDetailControl] = useState("general");
+  const { data: session } = useSession();
 
-  const socialRef = useRef()
-  const textRef = useRef()
+  const socialRef = useRef();
+  const textRef = useRef();
 
-  const { alertMessage, showAlert, alertVisible, alertType } = useAlert()
+  const { alertMessage, showAlert, alertVisible, alertType } = useAlert();
+
+  useEffect(() => {
+    const getProfileInfo = async () => {
+      try {
+        const [profileResponse, sidebarResponse] = await Promise.all([
+          getAPI(`/profile/${params.id}/get-profile-provider`),
+          getAPI(`/profile/${sessionInfo.user.id}/get-profile-sidebar`),
+        ]);
+        setProfileForSidebar(sidebarResponse.data);
+        setProfileInfo(profileResponse.data);
+        setType(sidebarResponse.message);
+      } catch (error) {
+        console.error("Error fetching profile information:", error);
+      }
+    };
+
+    if (sessionInfo?.user?.id) {
+      getProfileInfo();
+    }
+  }, [sessionInfo?.user?.id, params]);
 
   // Click and copy text
   const handleCopySocialMediaNickMame = () => {
     textRef.current
       ? navigator.clipboard.writeText(textRef.current.innerText)
-      : null
+      : null;
 
-    showAlert('Kopyalandı!', 'success')
-  }
+    showAlert("Kopyalandı!", "success");
+  };
 
   // Click and copy text
   const handleCopySocialMediaUrlAddress = () => {
-    textRef.current ? navigator.clipboard.writeText('www.example.com') : null
+    textRef.current ? navigator.clipboard.writeText("www.example.com") : null;
 
-    showAlert('Kopyalandı!', 'success')
-  }
+    showAlert("Kopyalandı!", "success");
+  };
 
   return (
     <>
@@ -109,8 +132,8 @@ const ProfilePageLayout = ({ data, query, profile }) => {
           <div
             className={`${
               isFollow
-                ? 'flex flex-col items-center justify-center shadow-lg p-3 w-full transition-all duration-300 ease-in-out bg-white text-black rounded-lg z-50 mt-3'
-                : 'overflow-hidden transition-all h-0 duration-300 ease-in-out'
+                ? "flex flex-col items-center justify-center shadow-lg p-3 w-full transition-all duration-300 ease-in-out bg-white text-black rounded-lg z-50 mt-3"
+                : "overflow-hidden transition-all h-0 duration-300 ease-in-out"
             }`}
           >
             <Alert
@@ -120,7 +143,7 @@ const ProfilePageLayout = ({ data, query, profile }) => {
             />
             <div
               className={`flex items-center justify-around overflow-x-auto gap-1 w-full ${
-                isFollow ? 'h-20' : 'overflow-hidden transition h-0'
+                isFollow ? "h-20" : "overflow-hidden transition h-0"
               }`}
             >
               {socialMediaItems &&
@@ -158,6 +181,9 @@ const ProfilePageLayout = ({ data, query, profile }) => {
           {profile && session && profile.user.id !== session.user.id && (
             <AppointmentComponent query={query} profile={profile} />
           )}
+          {!profile && !session && profile.user.id === session.user.id && (
+            <MembershipInfo profileInfo={profileInfo} type={"PROVIDER"} />
+          )}
         </div>
         <div className="w-full md:w-full lg:w-3/5 flex items-center justify-center pt-3 text-tertiaryBlue">
           <ProfileDetail
@@ -184,7 +210,7 @@ const ProfilePageLayout = ({ data, query, profile }) => {
       )}
       {openAddPost && <AddPostComp openAddPost={openAddPost} />}
     </>
-  )
-}
+  );
+};
 
-export default ProfilePageLayout
+export default ProfilePageLayout;

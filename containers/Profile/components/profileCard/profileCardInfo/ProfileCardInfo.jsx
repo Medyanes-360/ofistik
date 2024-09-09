@@ -1,26 +1,26 @@
-'use client'
-import React, { useCallback, useState, useRef, useEffect } from 'react'
+"use client";
+import React, { useCallback, useState, useRef, useEffect } from "react";
 //Components
-import Rating from '@/components/Rating'
+import Rating from "@/components/Rating";
 // Icons
-import { BiComment } from 'react-icons/bi'
-import { FaBullseye, FaMessage } from 'react-icons/fa6'
-import { HiVideoCamera } from 'react-icons/hi2'
-import { BsBoxArrowUp } from 'react-icons/bs'
-import { BiSolidComment } from 'react-icons/bi'
-import { FiPlus } from 'react-icons/fi'
-import { BsCheck } from 'react-icons/bs'
-import report from '../../../../../assets/image/report.png'
-import spam from '../../../../../assets/image/spam.png'
-import { GrLanguage } from 'react-icons/gr'
-import { FaUser } from 'react-icons/fa'
-import { IoIosCloseCircleOutline } from 'react-icons/io'
-import { SlOptionsVertical } from 'react-icons/sl'
-import Image from 'next/image'
-import { useSession } from 'next-auth/react'
-import { getAPI } from '@/services/fetchAPI'
-import profileImg from './man.png'
-import { Alert } from '@chakra-ui/react'
+import { BiComment } from "react-icons/bi";
+import { FaBullseye, FaMessage } from "react-icons/fa6";
+import { HiVideoCamera } from "react-icons/hi2";
+import { BsBoxArrowUp } from "react-icons/bs";
+import { BiSolidComment } from "react-icons/bi";
+import { FiPlus } from "react-icons/fi";
+import { BsCheck } from "react-icons/bs";
+import report from "../../../../../assets/image/report.png";
+import spam from "../../../../../assets/image/spam.png";
+import { GrLanguage } from "react-icons/gr";
+import { FaUser } from "react-icons/fa";
+import { IoIosCloseCircleOutline } from "react-icons/io";
+import { SlOptionsVertical } from "react-icons/sl";
+import Image from "next/image";
+import { useSession } from "next-auth/react";
+import { getAPI } from "@/services/fetchAPI";
+import profileImg from "./man.png";
+import { Alert } from "@chakra-ui/react";
 //This props came from <ProfilePageLayout/>  component
 const ProfileCardHeader = ({
   isHearted,
@@ -38,45 +38,45 @@ const ProfileCardHeader = ({
   minSessionTime,
   profileInfo,
 }) => {
-  const optionsRef = useRef()
-  const { data: session } = useSession()
-  const id = session?.user.id
-  const userIdToFollow = session?.user.id
+  const optionsRef = useRef();
+  const { data: session } = useSession();
+  const id = session?.user.id;
+  const userIdToFollow = session?.user.id;
 
-  const [wideScreenImg, setWideScreenImg] = useState(false)
-  const [profile, setProfile] = useState()
-  const [showOptions, setShowOptions] = useState(true)
-  const [loading, setLoading] = useState(true)
+  const [wideScreenImg, setWideScreenImg] = useState(false);
+  const [profile, setProfile] = useState();
+  const [showOptions, setShowOptions] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   const handleFollowToggle = async () => {
     if (!session) {
       // If the user is not logged in, redirect to the login page
-      Alert.alert('Lütfen giriş yapınız!')
-      return
+      Alert.alert("Lütfen giriş yapınız!");
+      return;
     }
 
     try {
-      await axios.post('/api/follow', { userIdToFollow })
-      setIsHearted(!isHearted)
+      await axios.post("/api/follow", { userIdToFollow });
+      setIsHearted(!isHearted);
     } catch (error) {
-      console.error('Failed to follow/unfollow:', error)
+      console.error("Failed to follow/unfollow:", error);
     }
-  }
+  };
 
   const handleOpenCommentDetailPage = useCallback((event) => {
-    event.stopPropagation()
-    if (!isCommented && detailControl !== 'evaluation') {
-      setIsCommented(true)
-      setDetailControl('evaluation')
-    } else if (isCommented && detailControl !== 'evaluation') {
-      setIsCommented(true)
-      setDetailControl('evaluation')
-    } else if (isCommented && detailControl === 'evaluation') {
-      setDetailControl('general')
+    event.stopPropagation();
+    if (!isCommented && detailControl !== "evaluation") {
+      setIsCommented(true);
+      setDetailControl("evaluation");
+    } else if (isCommented && detailControl !== "evaluation") {
+      setIsCommented(true);
+      setDetailControl("evaluation");
+    } else if (isCommented && detailControl === "evaluation") {
+      setDetailControl("general");
     } else {
-      return
+      return;
     }
-  })
+  });
 
   useEffect(() => {
     const checkIfClickedOutside = (e) => {
@@ -85,28 +85,28 @@ const ProfileCardHeader = ({
         optionsRef.current &&
         !optionsRef.current.contains(e.target)
       ) {
-        setShowOptions(false)
+        setShowOptions(false);
       }
-    }
+    };
 
-    document.addEventListener('mousedown', checkIfClickedOutside)
+    document.addEventListener("mousedown", checkIfClickedOutside);
 
     return () => {
-      document.removeEventListener('mousedown', checkIfClickedOutside)
-    }
-  }, [showOptions])
+      document.removeEventListener("mousedown", checkIfClickedOutside);
+    };
+  }, [showOptions]);
 
   useEffect(() => {
     const getProfile = async () => {
-      const result = await getAPI(`/profile/${query}/get-profile`)
-      if (result.status === 'success') {
-        setProfile(result.data)
-        setLoading(false)
+      const result = await getAPI(`/profile/${query}/get-profile`);
+      if (result.status === "success") {
+        setProfile(result.data);
+        setLoading(false);
       }
-    }
+    };
 
-    getProfile()
-  }, [id])
+    getProfile();
+  }, [id]);
 
   return (
     !loading && (
@@ -115,7 +115,7 @@ const ProfileCardHeader = ({
           <div className="relative imageArea min-w-[115px] flex flex-col items-center justify-center">
             <span
               className={`absolute h-5 w-5 ${
-                1 === 1 ? 'bg-green-600' : 'bg-redOne'
+                1 === 1 ? "bg-green-600" : "bg-redOne"
               } rounded-full top-4 point right-0 border-white border-4`}
             ></span>
             <Image
@@ -125,19 +125,19 @@ const ProfileCardHeader = ({
               src={profile?.profileImg || profileImg}
               className={`cursor-pointer w-28 h-28 rounded-full ${
                 1 !== undefined
-                  ? `border-2 ${1 === 1 ? 'border-green-600' : 'border-redOne'}`
-                  : ''
+                  ? `border-2 ${1 === 1 ? "border-green-600" : "border-redOne"}`
+                  : ""
               }`}
             />
             {1 !== undefined && (
               <span
                 className={`status bg-lightGreen  ${
-                  1 === 1 ? 'text-green-600' : 'text-redOne'
+                  1 === 1 ? "text-green-600" : "text-redOne"
                 } px-3 py-1 rounded-2xl text-sm border-${
-                  1 === 1 ? 'green-600' : 'redOne'
+                  1 === 1 ? "green-600" : "redOne"
                 } border relative bottom-3.5 font-semibold`}
               >
-                {1 === 1 ? 'Çevrim içi' : 'Meşgul'}
+                {1 === 1 ? "Çevrim içi" : "Meşgul"}
               </span>
             )}
           </div>
@@ -147,110 +147,118 @@ const ProfileCardHeader = ({
                 {`${profile?.name} ${profile?.surname}`}
               </h1>
               <h3 className="text-textGray text-xs">{profile?.jobStatus}</h3>
-              <div className=" flex items-center gap-2 }}mt-4 sm:mt-3 text-xs cursor-pointer">
-                <button className="bg-white border-premiumOrange border-2 w-20  hover:opacity-80 text-premiumOrange  rounded-md  transition duration-300 ease-in-out flex items-center justify-center py-1  gap-1">
-                  <FaMessage className="text-premiumOrange hover:opacity-90 " />
-                  <h1 className="hover:opacity-90 text-[10px] font-semibold">
-                    Mesaj
-                  </h1>
-                </button>
-                {isHearted ? (
-                  <div
-                    onClick={handleFollowToggle}
-                    className="hidden sm:flex items-center justify-center w-20 gap-1 bg-white text-premiumOrange border-2 border-premiumOrange rounded-md py-1 "
-                  >
-                    <BsCheck
-                      size={16}
-                      className={`heart-icon ${
-                        isHearted
-                          ? 'hearted text-premiumOrange  animate-heart '
-                          : ''
-                      }`}
-                    />
-                    <h1 className="text-[11px] font-semibold">Takip</h1>
-                  </div>
-                ) : (
-                  <div
-                    onClick={handleFollowToggle}
-                    className="hidden sm:flex items-center justify-center  gap-1 w-20 bg-premiumOrange text-white  rounded-md py-1 border-premiumOrange border-2"
-                  >
-                    <FiPlus
-                      size={14}
-                      className={`heart-icon ${
-                        isHearted ? 'heartedmb-1 animate-heart' : ''
-                      }`}
-                    />
-                    <h1 className="text-[11px] font-semibold ">Takip Et</h1>
+              {profile &&
+                profileInfo &&
+                profile.user.id !== profileInfo.user.id && (
+                  <div className=" flex items-center gap-2 }}mt-4 sm:mt-3 text-xs cursor-pointer">
+                    <button className="bg-white border-premiumOrange border-2 w-20  hover:opacity-80 text-premiumOrange  rounded-md  transition duration-300 ease-in-out flex items-center justify-center py-1  gap-1">
+                      <FaMessage className="text-premiumOrange hover:opacity-90 " />
+                      <h1 className="hover:opacity-90 text-[10px] font-semibold">
+                        Mesaj
+                      </h1>
+                    </button>
+                    {isHearted ? (
+                      <div
+                        onClick={handleFollowToggle}
+                        className="hidden sm:flex items-center justify-center w-20 gap-1 bg-white text-premiumOrange border-2 border-premiumOrange rounded-md py-1 "
+                      >
+                        <BsCheck
+                          size={16}
+                          className={`heart-icon ${
+                            isHearted
+                              ? "hearted text-premiumOrange  animate-heart "
+                              : ""
+                          }`}
+                        />
+                        <h1 className="text-[11px] font-semibold">Takip</h1>
+                      </div>
+                    ) : (
+                      <div
+                        onClick={handleFollowToggle}
+                        className="hidden sm:flex items-center justify-center  gap-1 w-20 bg-premiumOrange text-white  rounded-md py-1 border-premiumOrange border-2"
+                      >
+                        <FiPlus
+                          size={14}
+                          className={`heart-icon ${
+                            isHearted ? "heartedmb-1 animate-heart" : ""
+                          }`}
+                        />
+                        <h1 className="text-[11px] font-semibold ">Takip Et</h1>
+                      </div>
+                    )}
                   </div>
                 )}
-              </div>
             </div>
-            <div
-              ref={socialRef}
-              className=" absolute top-0 w-full flex gap-3  items-center justify-end cursor-pointer"
-            >
-              {isHearted ? (
+            {profile &&
+              profileInfo &&
+              profile.user.id !== profileInfo.user.id && (
                 <div
-                  onClick={handleFollowToggle}
-                  className="w-20 flex sm:hidden  items-center justify-center py-1 gap-1 bg-primaryBlue text-white border rounded-md  "
+                  ref={socialRef}
+                  className=" absolute top-0 w-full flex gap-3  items-center justify-end cursor-pointer"
                 >
-                  <BsCheck
-                    size={18}
-                    className={`heart-icon ${
-                      isHearted ? 'hearted text-white  animate-heart ' : ''
-                    }`}
-                  />
-                  <h1 className="text-[11px]">Takip</h1>
-                </div>
-              ) : (
-                <div
-                  onClick={handleFollowToggle}
-                  className="w-20 flex sm:hidden  items-center justify-center py-1  border rounded-md
-                        text-white bg-primaryBlue"
-                >
-                  <FiPlus
-                    size={14}
-                    className={`heart-icon ${
-                      isHearted ? 'heartedmb-1 animate-heart' : ''
-                    }`}
-                  />
-                  <h1 className="text-[11px] sm:hidden telefon:block ">
-                    Takip Et
-                  </h1>
-                </div>
-              )}
-              <BsBoxArrowUp
-                onClick={() => {
-                  setIsFollow(!isFollow)
-                }}
-                className={`${
-                  isFollow ? 'text-primaryBlue' : ''
-                } hover:opacity-60`}
-              />
-              <div className="relative group">
-                <SlOptionsVertical
-                  onClick={() => setShowOptions(!showOptions)}
-                  className="group-hover:opacity-60 "
-                />
-                <div
-                  ref={optionsRef}
-                  className={`absolute top-4 right-0 ${
-                    showOptions ? 'flex' : 'hidden'
-                  } flex-col w-32 pt-2`}
-                >
-                  <div className="py-2  w-full p-3 border rounded-lg text-[10px] bg-lighBlue  text-black">
-                    <div className="flex items-center gap-2 text-xs">
-                      <Image src={spam} width={18} height={18} />
-                      <h1 className="hover:opacity-75">Spam</h1>
+                  {isHearted ? (
+                    <div
+                      onClick={handleFollowToggle}
+                      className="w-20 flex sm:hidden  items-center justify-center py-1 gap-1 bg-primaryBlue text-white border rounded-md  "
+                    >
+                      <BsCheck
+                        size={18}
+                        className={`heart-icon ${
+                          isHearted ? "hearted text-white  animate-heart " : ""
+                        }`}
+                      />
+                      <h1 className="text-[11px]">Takip</h1>
                     </div>
-                    <div className="flex items-center gap-2 text-xs mt-1">
-                      <Image src={report} width={18} height={18} />
-                      <h1 className="hover:opacity-75">Şikayet Et</h1>
+                  ) : (
+                    <div
+                      onClick={handleFollowToggle}
+                      className="w-20 flex sm:hidden  items-center justify-center py-1  border rounded-md
+                        text-white bg-primaryBlue"
+                    >
+                      <FiPlus
+                        size={14}
+                        className={`heart-icon ${
+                          isHearted ? "heartedmb-1 animate-heart" : ""
+                        }`}
+                      />
+                      <h1 className="text-[11px] sm:hidden telefon:block ">
+                        Takip Et
+                      </h1>
+                    </div>
+                  )}
+                  <BsBoxArrowUp
+                    onClick={() => {
+                      setIsFollow(!isFollow);
+                    }}
+                    className={`${
+                      isFollow ? "text-primaryBlue" : ""
+                    } hover:opacity-60`}
+                  />
+                  <div className="relative group">
+                    <SlOptionsVertical
+                      onClick={() => setShowOptions(!showOptions)}
+                      className="group-hover:opacity-60 "
+                    />
+                    <div
+                      ref={optionsRef}
+                      className={`absolute top-4 right-0 ${
+                        showOptions ? "flex" : "hidden"
+                      } flex-col w-32 pt-2`}
+                    >
+                      <div className="py-2  w-full p-3 border rounded-lg text-[10px] bg-lighBlue  text-black">
+                        <div className="flex items-center gap-2 text-xs">
+                          <Image src={spam} width={18} height={18} />
+                          <h1 className="hover:opacity-75">Spam</h1>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs mt-1">
+                          <Image src={report} width={18} height={18} />
+                          <h1 className="hover:opacity-75">Şikayet Et</h1>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              )}
             <div className=" w-full flex gap-3 items-center justify-end cursor-pointer">
               <div
                 className="flex items-center gap-1 mb-1 "
@@ -261,7 +269,7 @@ const ProfileCardHeader = ({
               </div>
               <div className="flex items-center gap-1 ">
                 <h1 className="text-xs font-semibold">12</h1>
-                {isCommented && detailControl === 'evaluation' ? (
+                {isCommented && detailControl === "evaluation" ? (
                   <BiSolidComment onClick={handleOpenCommentDetailPage} />
                 ) : (
                   <BiComment
@@ -303,7 +311,7 @@ const ProfileCardHeader = ({
               {price}/Seans
             </h4>
             <h4 className="ml-2 text-sm pt-1">
-              {' '}
+              {" "}
               {`(Minimum ${minSessionTime} dakika)`}
             </h4>
           </div>
@@ -324,7 +332,7 @@ const ProfileCardHeader = ({
         )}
       </>
     )
-  )
-}
+  );
+};
 
-export default ProfileCardHeader
+export default ProfileCardHeader;
