@@ -48,7 +48,7 @@ const socialMediaItems = [
   },
 ];
 
-const ProfilePageLayout = ({ data, query, profile }) => {
+const ProfilePageLayout = ({ data, query, profile, params }) => {
   const [profileInfo, setProfileInfo] = useState(null);
   const { data: sessionInfo } = useSession();
   const users = useProfileStore((state) => state.users);
@@ -78,9 +78,7 @@ const ProfilePageLayout = ({ data, query, profile }) => {
           getAPI(`/profile/${params.id}/get-profile-provider`),
           getAPI(`/profile/${sessionInfo.user.id}/get-profile-sidebar`),
         ]);
-        setProfileForSidebar(sidebarResponse.data);
         setProfileInfo(profileResponse.data);
-        setType(sidebarResponse.message);
       } catch (error) {
         console.error("Error fetching profile information:", error);
       }
