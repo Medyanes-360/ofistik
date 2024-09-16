@@ -11,6 +11,7 @@ import {
 } from "react-icons/fi";
 import { CiSearch } from "react-icons/ci";
 import Image from "next/image";
+import { RiLiveFill } from "react-icons/ri";
 import profileImg from "./man.png";
 import { useRouter } from "next/navigation";
 import { FiUser, FiCalendar } from "react-icons/fi";
@@ -19,11 +20,8 @@ import { FaAd, FaMoneyBillAlt } from "react-icons/fa";
 import { RiMessage2Fill } from "react-icons/ri";
 import { IoShareSocial } from "react-icons/io5";
 import { FcStatistics } from "react-icons/fc";
-import Page from "@/app/live/page";
 
 const Sidebar = ({ activeTab, setActiveTab, profile, type }) => {
-  console.log(type);
-
   const allTabs = [
     { name: "Profil", icon: <FiUser />, key: "profile" },
     {
@@ -46,7 +44,7 @@ const Sidebar = ({ activeTab, setActiveTab, profile, type }) => {
       icon: <FcStatistics />,
       key: "socialStatistic",
     },
-    { name: "Toplantı Oluştur", icon: <Page />, key: "create-meeting" },
+    { name: "Toplantı Oluştur", icon: <RiLiveFill />, key: "create-meeting" },
   ];
 
   // type'a göre sekmeleri filtreleme
