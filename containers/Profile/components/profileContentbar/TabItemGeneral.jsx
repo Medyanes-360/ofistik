@@ -8,18 +8,19 @@ import SkillsSection from '@/components/general/SkillsSection'
 import LanguageSection from '@/components/general/LanguageSection'
 import { useSession } from 'next-auth/react'
 
-const TabItemsGeneral = ({ query }) => {
+const TabItemsGeneral = ({ query, refreshProfile }) => {
   const { data: session } = useSession()
   const id = session?.user.id
 
   const [profileInfo, setProfileInfo] = useState([])
+
   const [loading, setLoading] = useState(true)
   const [isOwner, setIsOwner] = useState(false) // isOwner state'i oluşturuldu
   const getProfile = async () => {
     const result = await getAPI(`/profile/${query}/get-profile`)
     if (result.status === 'success') {
       setProfileInfo(result.data)
-      console.log(result.data.user.id)
+      console.log(result.data)
 
       // API'den dönen id ile session id'sini karşılaştır
       if (result.data.user.id === id) {
@@ -46,22 +47,22 @@ const TabItemsGeneral = ({ query }) => {
         <EducationInfoSection
           mockData={profileInfo}
           isOwner={isOwner}
-          refreshProfile={getProfile}
+          refreshProfile={refreshProfile}
         />
         <Certificate
           mockData={profileInfo}
           isOwner={isOwner}
-          refreshProfile={getProfile}
+          refreshProfile={refreshProfile}
         />
         <SkillsSection
           data={profileInfo}
           isOwner={isOwner}
-          refreshProfile={getProfile}
+          refreshProfile={refreshProfile}
         />
         <LanguageSection
           data={profileInfo}
           isOwner={isOwner}
-          refreshProfile={getProfile}
+          refreshProfile={refreshProfile}
         />
       </div>
     )

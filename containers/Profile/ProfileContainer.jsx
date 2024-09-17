@@ -48,9 +48,13 @@ const socialMediaItems = [
   },
 ]
 
-const ProfilePageLayout = ({ data, query, profile, params }) => {
-  const [profileInfo, setProfileInfo] = useState(null)
-  const { data: sessionInfo } = useSession()
+const ProfilePageLayout = ({
+  data,
+  query,
+  profile,
+  params,
+  refreshProfile,
+}) => {
   const users = useProfileStore((state) => state.users)
   const setUsers = useProfileStore((state) => state.setUsers)
   const posts = useProfileStore((state) => state.posts)
@@ -65,29 +69,10 @@ const ProfilePageLayout = ({ data, query, profile, params }) => {
   const [isFollow, setIsFollow] = useState(false) //Social media field opening control
   const [detailControl, setDetailControl] = useState('general')
   const { data: session } = useSession()
-
   const socialRef = useRef()
   const textRef = useRef()
 
   const { alertMessage, showAlert, alertVisible, alertType } = useAlert()
-
-  useEffect(() => {
-    const getProfileInfo = async () => {
-      try {
-        const [profileResponse, sidebarResponse] = await Promise.all([
-          getAPI(`/profile/${params.id}/get-profile-provider`),
-          getAPI(`/profile/${sessionInfo.user.id}/get-profile-sidebar`),
-        ])
-        setProfileInfo(profileResponse.data)
-      } catch (error) {
-        console.error('Error fetching profile information:', error)
-      }
-    }
-
-    if (sessionInfo?.user?.id) {
-      getProfileInfo()
-    }
-  }, [params])
 
   // Click and copy text
   const handleCopySocialMediaNickMame = () => {
@@ -181,7 +166,7 @@ const ProfilePageLayout = ({ data, query, profile, params }) => {
             <AppointmentComponent query={query} profile={profile} />
           )}
           {profile && session && profile.user.id === session.user.id && (
-            <MembershipInfo profileInfo={profileInfo} type={'PROVIDER'} />
+            <MembershipInfo profileInfo={profile} type={'PROVIDER'} />
           )}
         </div>
         <div className="w-full md:w-full lg:w-3/5 flex items-center justify-center pt-3 text-tertiaryBlue">
@@ -194,6 +179,7 @@ const ProfilePageLayout = ({ data, query, profile, params }) => {
             setIsFollow={setIsFollow}
             query={query}
             profile={profile}
+            refreshProfile={refreshProfile}
           />
         </div>
       </div>

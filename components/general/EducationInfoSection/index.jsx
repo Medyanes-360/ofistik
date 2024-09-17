@@ -2,11 +2,13 @@ import { postAPI } from '@/services/fetchAPI'
 import { useState } from 'react'
 import { FaUserGraduate, FaTrash } from 'react-icons/fa'
 import { FaPencilAlt } from 'react-icons/fa'
-
 import { IoIosAddCircle } from 'react-icons/io'
 import { toast } from 'react-toastify'
+
 const EducationInfoSection = ({ mockData, isOwner, refreshProfile }) => {
-  const [educationInfo, setEducationInfo] = useState(mockData?.educationInfo)
+  const [educationInfo, setEducationInfo] = useState(
+    mockData?.educationInfo || []
+  )
   const [editEducationId, setEditEducationId] = useState(null)
   const [editEducationData, setEditEducationData] = useState({
     university: '',
@@ -38,10 +40,9 @@ const EducationInfoSection = ({ mockData, isOwner, refreshProfile }) => {
       data = {
         university: editEducationData.university,
         year: editEducationData.year,
-        id: null,
+        id: null, // id alanını null olarak bırakıyoruz.
         hizmetVerenId: mockData.id,
       }
-      refreshProfile()
     } else {
       // Mevcut eğitim bilgisi güncelleniyor
       data = {
@@ -50,7 +51,6 @@ const EducationInfoSection = ({ mockData, isOwner, refreshProfile }) => {
         year: editEducationData.year,
         hizmetVerenId: mockData.id,
       }
-      refreshProfile()
     }
 
     try {
@@ -62,6 +62,8 @@ const EducationInfoSection = ({ mockData, isOwner, refreshProfile }) => {
           ...prevInfo,
           { id: Date.now().toString(), ...editEducationData },
         ])
+        // Profil verisini güncelle
+        refreshProfile()
       } else if (res.status === 'UPDATED') {
         toast.success('Eğitim bilgisi başarıyla güncellendi')
 
@@ -72,6 +74,8 @@ const EducationInfoSection = ({ mockData, isOwner, refreshProfile }) => {
               : education
           )
         )
+        // Profil verisini güncelle
+        refreshProfile()
       } else {
         console.log(res.message)
       }
@@ -103,15 +107,18 @@ const EducationInfoSection = ({ mockData, isOwner, refreshProfile }) => {
         id: id,
       })
       if (res.status === 'DELETED') {
-        toast.success('Eğitim bilgisi başarıyla Silindi')
+        toast.success('Eğitim bilgisi başarıyla silindi')
         setEducationInfo((prevInfo) =>
           prevInfo.filter((education) => education.id !== id)
         )
+        // Profil verisini güncelle
+        refreshProfile()
       }
     } catch (error) {
       console.log(error)
     }
   }
+
   return (
     <>
       <div className="flex items-center gap-2 mt-5">
@@ -216,4 +223,5 @@ const EducationInfoSection = ({ mockData, isOwner, refreshProfile }) => {
     </>
   )
 }
+
 export default EducationInfoSection

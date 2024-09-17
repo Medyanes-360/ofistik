@@ -32,14 +32,12 @@ const SkillsSection = ({ data: userInfo, isOwner, refreshProfile }) => {
 
     let data
     if (editSkillId === 'new') {
-      refreshProfile()
       data = {
         name: editSkillData.name,
         id: null,
         hizmetVerenId: userInfo.id,
       }
     } else {
-      refreshProfile()
       data = {
         id: editSkillId,
         name: editSkillData.name,
@@ -65,6 +63,7 @@ const SkillsSection = ({ data: userInfo, isOwner, refreshProfile }) => {
       } else {
         console.log(res.message)
       }
+      refreshProfile()
     } catch (error) {
       console.error('API request failed:', error)
     }

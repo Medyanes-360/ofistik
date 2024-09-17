@@ -34,7 +34,6 @@ const Certificate = ({ mockData, isOwner, refreshProfile }) => {
 
     let data
     if (editCertificateId === 'new') {
-      refreshProfile()
       data = {
         certificate: editCertificationData.certificate,
         year: editCertificationData.year,
@@ -42,7 +41,6 @@ const Certificate = ({ mockData, isOwner, refreshProfile }) => {
         hizmetVerenId: mockData.id,
       }
     } else {
-      refreshProfile()
       data = {
         id: editCertificateId,
         certificate: editCertificationData.certificate,
@@ -74,6 +72,7 @@ const Certificate = ({ mockData, isOwner, refreshProfile }) => {
       } else {
         console.log(res.message)
       }
+      refreshProfile()
     } catch (error) {
       console.error('API request failed:', error)
     }

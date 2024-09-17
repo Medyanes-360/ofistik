@@ -29,11 +29,18 @@ const ProfileContentbar = ({
   setIsFollow,
   query,
   profile,
+  refreshProfile,
 }) => {
   const MenuItems = ({ detailControl, isCommented }) => {
     switch (detailControl) {
       case 'general':
-        return <TabItemGeneral query={query} profile={profile} />
+        return (
+          <TabItemGeneral
+            query={query}
+            profile={profile}
+            refreshProfile={refreshProfile}
+          />
+        )
       case 'social':
         return <TabsItemSocial isFollow={isFollow} setIsFollow={setIsFollow} />
       case 'evaluation':

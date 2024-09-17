@@ -33,7 +33,6 @@ const LanguageSection = ({ data: userInfo, isOwner, refreshProfile }) => {
 
     let data
     if (editLanguagesId === 'new') {
-      refreshProfile()
       data = {
         languageName: editLanguagesData.languageName,
         level: editLanguagesData.level,
@@ -41,7 +40,6 @@ const LanguageSection = ({ data: userInfo, isOwner, refreshProfile }) => {
         hizmetVerenId: userInfo.id,
       }
     } else {
-      refreshProfile()
       data = {
         id: editLanguagesId,
         languageName: editLanguagesData.languageName,
@@ -70,9 +68,11 @@ const LanguageSection = ({ data: userInfo, isOwner, refreshProfile }) => {
               : language
           )
         )
+        refreshProfile()
       } else {
         console.log(res.message)
       }
+      refreshProfile()
     } catch (error) {
       console.error('API request failed:', error)
     }

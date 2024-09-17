@@ -39,21 +39,20 @@ export default ({ params }) => {
   //   getProfileData();
   // }, []);
 
-  useEffect(() => {
-    const getProfileInfo = async () => {
-      try {
-        const [profileResponse, sidebarResponse] = await Promise.all([
-          getAPI(`/profile/${params.id}/get-profile-provider`),
-          getAPI(`/profile/${sessionInfo.user.id}/get-profile-sidebar`),
-        ])
-        setProfileForSidebar(sidebarResponse.data)
-        setProfileInfo(profileResponse.data)
-        setType(sidebarResponse.message)
-      } catch (error) {
-        console.error('Error fetching profile information:', error)
-      }
+  const getProfileInfo = async () => {
+    try {
+      const [profileResponse, sidebarResponse] = await Promise.all([
+        getAPI(`/profile/${params.id}/get-profile-provider`),
+        getAPI(`/profile/${sessionInfo.user.id}/get-profile-sidebar`),
+      ])
+      setProfileForSidebar(sidebarResponse.data)
+      setProfileInfo(profileResponse.data)
+      setType(sidebarResponse.message)
+    } catch (error) {
+      console.error('Error fetching profile information:', error)
     }
-
+  }
+  useEffect(() => {
     if (sessionInfo?.user?.id) {
       getProfileInfo()
     }
@@ -68,6 +67,7 @@ export default ({ params }) => {
               data={data?.data}
               query={params.id}
               profile={profileInfo}
+              refreshProfile={getProfileInfo}
             />
           </div>
         )
