@@ -7,7 +7,6 @@ import { useEffect, useState } from 'react'
 import { postAPI, getAPI } from '@/services/fetchAPI'
 import { useSession } from 'next-auth/react'
 
-import Page from '@/app/campaign/page'
 import CampaginContainer from '@/components/Campaign'
 import Dashboard from '@/components/commonModules/dashboard'
 import MainPage from '@/components/mainAdvertPage/mainPage'
@@ -17,6 +16,7 @@ import SocialAreaForUser from '@/components/socialStatistics/socialAreaForUser'
 import SocialPageComponent from '@/components/socialStatistics/socialPage'
 import MembershipInfo from '@/containers/Home/_components/receiverProfile/MembershipInfo'
 import PasswordUpdate from '@/containers/Home/_components/receiverProfile/PasswordUpdate'
+import Page from '@/app/live/page'
 
 export default ({ params }) => {
   const [data, setData] = useState(null)
@@ -52,6 +52,7 @@ export default ({ params }) => {
       console.error('Error fetching profile information:', error)
     }
   }
+
   useEffect(() => {
     if (sessionInfo?.user?.id) {
       getProfileInfo()
@@ -113,7 +114,12 @@ export default ({ params }) => {
             <SocialPageComponent />
           </div>
         )
-
+      case 'create-meeting':
+        return (
+          <div className="max-h-[100vh] w-full overflow-y-scroll">
+            <Page />
+          </div>
+        )
       case 'settings':
         return (
           <div className='bg-grayBg w-full min-h-screen pt-20 sm:pt-36 pb-10 p-3 overflow-auto"'>
