@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from "react";
 import {
   FiSettings,
   FiHelpCircle,
@@ -8,107 +8,105 @@ import {
   FiChevronUp,
   FiChevronRight,
   FiChevronLeft,
-} from 'react-icons/fi'
-import { CiSearch } from 'react-icons/ci'
-import Image from 'next/image'
-import profileImg from './man.png'
-import { useRouter } from 'next/navigation'
-import { FiUser, FiCalendar } from 'react-icons/fi'
-import { MdDashboard, MdCampaign } from 'react-icons/md'
-import { FaAd, FaMoneyBillAlt } from 'react-icons/fa'
-import { RiMessage2Fill } from 'react-icons/ri'
-import { IoShareSocial } from 'react-icons/io5'
-import { FcStatistics } from 'react-icons/fc'
+} from "react-icons/fi";
+import { CiSearch } from "react-icons/ci";
+import Image from "next/image";
+import profileImg from "./man.png";
+import { useRouter } from "next/navigation";
+import { FiUser, FiCalendar } from "react-icons/fi";
+import { MdDashboard, MdCampaign } from "react-icons/md";
+import { FaAd, FaMoneyBillAlt } from "react-icons/fa";
+import { RiMessage2Fill } from "react-icons/ri";
+import { IoShareSocial } from "react-icons/io5";
+import { FcStatistics } from "react-icons/fc";
 
 const Sidebar = ({ activeTab, setActiveTab, profile, type }) => {
-  console.log(type)
-
   const allTabs = [
-    { name: 'Profil', icon: <FiUser />, key: 'profile' },
+    { name: "Profil", icon: <FiUser />, key: "profile" },
     {
-      name: 'Randevularım',
+      name: "Randevularım",
       icon: <FiCalendar />,
-      key: 'appointments',
+      key: "appointments",
       subTabs: [
-        { name: 'Upcoming', key: 'upcoming' },
-        { name: 'Past', key: 'past' },
+        { name: "Upcoming", key: "upcoming" },
+        { name: "Past", key: "past" },
       ],
     },
-    { name: 'Kontrol Paneli', icon: <MdDashboard />, key: 'dashboard' },
-    { name: 'Reklamlar', icon: <FaAd />, key: 'addsense' },
-    { name: 'Kampanyalar', icon: <MdCampaign />, key: 'campaign' },
-    { name: 'Mesajlar', icon: <RiMessage2Fill />, key: 'messages' },
-    { name: 'Finans', icon: <FaMoneyBillAlt />, key: 'finance' },
-    { name: 'Sosyal', icon: <IoShareSocial />, key: 'social' },
+    { name: "Kontrol Paneli", icon: <MdDashboard />, key: "dashboard" },
+    { name: "Reklamlar", icon: <FaAd />, key: "addsense" },
+    { name: "Kampanyalar", icon: <MdCampaign />, key: "campaign" },
+    { name: "Mesajlar", icon: <RiMessage2Fill />, key: "messages" },
+    { name: "Finans", icon: <FaMoneyBillAlt />, key: "finance" },
+    { name: "Sosyal", icon: <IoShareSocial />, key: "social" },
     {
-      name: 'Sosyal İstatistik',
+      name: "Sosyal İstatistik",
       icon: <FcStatistics />,
-      key: 'socialStatistic',
+      key: "socialStatistic",
     },
-  ]
+  ];
 
   // type'a göre sekmeleri filtreleme
   const filteredTabs = allTabs.filter((tab) => {
-    if (type === 'BOTH') {
-      return true // Tüm sekmeler gösterilir
+    if (type === "BOTH") {
+      return true; // Tüm sekmeler gösterilir
     }
-    if (type === 'RECEIVER') {
-      return tab.key === 'profile' || tab.key === 'appointments' // Sadece Profil ve Randevularım gösterilir
+    if (type === "RECEIVER") {
+      return tab.key === "profile" || tab.key === "appointments"; // Sadece Profil ve Randevularım gösterilir
     }
-    if (type === 'PROVIDER') {
-      return tab.key !== 'appointments' // Randevularım harici tüm sekmeler gösterilir
+    if (type === "PROVIDER") {
+      return tab.key !== "appointments"; // Randevularım harici tüm sekmeler gösterilir
     }
-    return false // Default durumda hiçbir şey gösterilmez
-  })
+    return false; // Default durumda hiçbir şey gösterilmez
+  });
 
-  const router = useRouter()
-  const [isSidebarOpen, setSidebarOpen] = useState(false)
-  const [openTab, setOpenTab] = useState(null)
-  const [searchTerm, setSearchTerm] = useState('')
+  const router = useRouter();
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [openTab, setOpenTab] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const toggleSidebar = () => {
-    setSidebarOpen(!isSidebarOpen)
-    setOpenTab(null)
-  }
+    setSidebarOpen(!isSidebarOpen);
+    setOpenTab(null);
+  };
 
   const toggleSubMenu = (tab) => {
-    setOpenTab(openTab === tab ? null : tab)
-  }
+    setOpenTab(openTab === tab ? null : tab);
+  };
 
   const handleClickOutside = (event) => {
-    if (event.target.closest('.sub-menu-popup')) return
-    setOpenTab(null)
-  }
+    if (event.target.closest(".sub-menu-popup")) return;
+    setOpenTab(null);
+  };
 
   useEffect(() => {
     if (!isSidebarOpen && openTab) {
-      document.addEventListener('click', handleClickOutside)
+      document.addEventListener("click", handleClickOutside);
     } else {
-      document.removeEventListener('click', handleClickOutside)
+      document.removeEventListener("click", handleClickOutside);
     }
 
-    return () => document.removeEventListener('click', handleClickOutside)
-  }, [openTab, isSidebarOpen])
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [openTab, isSidebarOpen]);
 
   const handleTabClick = (tab) => {
-    if (tab.name == 'Profil') {
-      router.push(`/profile/${profile.user.username}`)
-      setActiveTab(tab.key)
+    if (tab.name === "Profil") {
+      router.push(`/profile/${profile.user.username}`);
     } else if (tab.subTabs) {
-      toggleSubMenu(tab.key)
+      toggleSubMenu(tab.key);
     } else {
-      setActiveTab(tab.key)
+      router.push(`/${tab.key}`); // Dynamically change route based on tab key
+      setActiveTab(tab.key); // Update active tab state
     }
-  }
+  };
 
   return (
     <div
       className={`bg-white text-gray-600 fixed top-0 left-0 h-screen ${
-        isSidebarOpen ? 'w-80' : 'w-20'
+        isSidebarOpen ? "w-80" : "w-20"
       } min-h-screen flex flex-col p-4 transition-all duration-300 relative z-50`}
     >
       <div
         className={`mb-8 flex items-center  ${
-          isSidebarOpen ? 'justify-between' : 'justify-center'
+          isSidebarOpen ? "justify-between" : "justify-center"
         }`}
       >
         {isSidebarOpen && (
@@ -145,7 +143,7 @@ const Sidebar = ({ activeTab, setActiveTab, profile, type }) => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className={`p-2 rounded bg-gray-200 text-white placeholder-gray-400 pl-12 transition-all duration-300 ${
-              isSidebarOpen ? 'w-full' : 'w-0'
+              isSidebarOpen ? "w-full" : "w-0"
             }`}
           />
         </div>
@@ -159,8 +157,8 @@ const Sidebar = ({ activeTab, setActiveTab, profile, type }) => {
                   activeTab === tab.key ||
                   (tab.subTabs &&
                     tab.subTabs.some((subTab) => activeTab === subTab.key))
-                    ? 'bg-premiumOrange text-white'
-                    : ''
+                    ? "bg-premiumOrange text-white"
+                    : ""
                 }`}
                 onClick={() => handleTabClick(tab)}
               >
@@ -179,8 +177,8 @@ const Sidebar = ({ activeTab, setActiveTab, profile, type }) => {
                       key={subTab.key}
                       className={`flex items-center p-2 text-sm font-medium rounded-lg w-full ${
                         activeTab === subTab.key
-                          ? 'bg-premiumOrange text-white'
-                          : ''
+                          ? "bg-premiumOrange text-white"
+                          : ""
                       }`}
                       onClick={() => setActiveTab(subTab.key)}
                     >
@@ -195,11 +193,11 @@ const Sidebar = ({ activeTab, setActiveTab, profile, type }) => {
                     <button
                       key={subTab.key}
                       className={`block w-full text-left p-2 text-sm font-medium rounded-lg ${
-                        activeTab === subTab.key ? 'bg-gray-600' : ''
+                        activeTab === subTab.key ? "bg-gray-600" : ""
                       }`}
                       onClick={() => {
-                        setActiveTab(subTab.key)
-                        setOpenTab(null)
+                        setActiveTab(subTab.key);
+                        setOpenTab(null);
                       }}
                     >
                       {subTab.name}
@@ -220,25 +218,25 @@ const Sidebar = ({ activeTab, setActiveTab, profile, type }) => {
       <div className="mt-auto">
         <button
           className={`flex items-center p-3 text-sm font-medium rounded-lg  w-full ${
-            activeTab === 'support' ? 'bg-premiumOrange text-white' : ''
+            activeTab === "support" ? "bg-premiumOrange text-white" : ""
           }`}
-          onClick={() => setActiveTab('support')}
+          onClick={() => setActiveTab("support")}
         >
           <FiHelpCircle className="mr-2" />
-          {isSidebarOpen && 'Destek'}
+          {isSidebarOpen && "Destek"}
         </button>
         <button
           className={`flex items-center p-3 text-sm font-medium rounded-lg w-full ${
-            activeTab === 'settings' ? 'bg-premiumOrange text-white' : ''
+            activeTab === "settings" ? "bg-premiumOrange text-white" : ""
           }`}
-          onClick={() => setActiveTab('settings')}
+          onClick={() => setActiveTab("settings")}
         >
           <FiSettings className="mr-2" />
-          {isSidebarOpen && 'Ayarlar'}
+          {isSidebarOpen && "Ayarlar"}
         </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Sidebar
+export default Sidebar;
