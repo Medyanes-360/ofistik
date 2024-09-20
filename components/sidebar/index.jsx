@@ -88,13 +88,13 @@ const Sidebar = ({ activeTab, setActiveTab, profile, type }) => {
   }, [openTab, isSidebarOpen]);
 
   const handleTabClick = (tab) => {
-    if (tab.name === "Profil") {
+    if (tab.name == "Profil") {
       router.push(`/profile/${profile.user.username}`);
+      setActiveTab(tab.key);
     } else if (tab.subTabs) {
       toggleSubMenu(tab.key);
     } else {
-      router.push(`/${tab.key}`); // Dynamically change route based on tab key
-      setActiveTab(tab.key); // Update active tab state
+      setActiveTab(tab.key);
     }
   };
 
